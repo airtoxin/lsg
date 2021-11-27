@@ -7,7 +7,7 @@ export const puzzleRouter = router().query("Puzzle", {
     id: z.string(),
   }),
   async resolve({ input: { id } }) {
-    const puzzle = puzzles.map((p) => p.id === id);
+    const puzzle = puzzles.find((p) => p.id === id);
     if (puzzle == null) {
       throw new TRPCError({
         code: "NOT_FOUND",
