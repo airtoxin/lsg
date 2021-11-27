@@ -1,5 +1,5 @@
 import { router, TRPCError } from "@trpc/server";
-import { puzzles } from "../../../libs/core/puzzles";
+import { puzzles } from "../../../core/puzzles";
 import { z } from "zod";
 
 export const puzzleRouter = router().query("Puzzle", {

@@ -1,5 +1,5 @@
 import { router } from "@trpc/server";
-import { puzzles } from "../../../libs/core/puzzles";
+import { puzzles } from "../../../core/puzzles";
 
 export const homeRouter = router().query("Home", {
   async resolve() {
