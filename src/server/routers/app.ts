@@ -1,6 +1,7 @@
 import superjson from "superjson";
 import { createRouter } from "../createRouter";
 import { homeRouter } from "./pages/Home";
+import { puzzleRouter } from "./pages/Puzzle";
 
 /**
  * Create your application's root router
@@ -19,6 +20,6 @@ export const appRouter = createRouter()
    * @link https://trpc.io/docs/error-formatting
    */
   // .formatError(({ shape, error }) => { })
-  .merge("page.", homeRouter);
+  .merge("page.", homeRouter.merge(puzzleRouter));
 
 export type AppRouter = typeof appRouter;
