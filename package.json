@@ -10,14 +10,20 @@
     "test": "jest"
   },
   "dependencies": {
+    "@trpc/client": "^9.15.0",
+    "@trpc/next": "^9.15.0",
+    "@trpc/react": "^9.15.0",
+    "@trpc/server": "^9.15.0",
     "@types/recoil": "^0.0.9",
     "next": "12.0.4",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-query": "^3.33.6",
     "recoil": "^0.5.2",
     "short-uuid": "^4.2.0",
     "ts-dedent": "^2.2.0",
-    "use-sound": "^4.0.1"
+    "use-sound": "^4.0.1",
+    "zod": "^3.11.6"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
