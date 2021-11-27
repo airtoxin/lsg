@@ -1,20 +1,33 @@
-import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
-import { puzzles } from "../../../libs/core/puzzles";
-
-const appRouter = trpc.router().query("mainPuzzles", {
-  resolve() {
-    return {
-      puzzles,
-    };
-  },
-});
-
-// export type definition of API
-export type AppRouter = typeof appRouter;
+import { appRouter } from "../../../server/routers/app";
+import { createContext } from "../../../server/context";
 
 // export API handler
 export default trpcNext.createNextApiHandler({
   router: appRouter,
-  createContext: () => null,
+  /**
+   * @link https://trpc.io/docs/context
+   */
+  createContext,
+  /**
+   * @link https://trpc.io/docs/error-handling
+   */
+  onError({ error }) {
+    if (error.code === "INTERNAL_SERVER_ERROR") {
+      // send to bug reporting
+      console.error("Something went wrong", error);
+    }
+  },
+  /**
+   * Enable query batching
+   */
+  batching: {
+    enabled: true,
+  },
+  /**
+   * @link https://trpc.io/docs/caching#api-response-caching
+   */
+  // responseMeta() {
+  //   // ...
+  // },
 });

@@ -1,8 +1,9 @@
 import "tailwindcss/tailwind.css";
 import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
-import { AppRouter } from "./api/trpc/[trpc]";
 import { withTRPC } from "@trpc/next";
+import { AppRouter } from "../server/routers/app";
+import superjson from "superjson";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -26,6 +27,7 @@ export default withTRPC<AppRouter>({
 
     return {
       url,
+      transformer: superjson,
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
