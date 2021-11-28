@@ -24,7 +24,7 @@ export const TestResultEdit: VoidFunctionComponent<{ test: Test }> = ({
   }, [playNg, playOk, testSuccess]);
 
   return (
-    <div>
+    <div className="flex-grow">
       <div>Step&nbsp;{test.step}</div>
       <div className="flex">
         Expect:&nbsp;
