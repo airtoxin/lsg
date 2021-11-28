@@ -1,7 +1,7 @@
 import { VoidFunctionComponent } from "react";
-import { TestResult } from "./TestResult";
 import { useRecoilValue } from "recoil";
 import { PuzzleState } from "../../states";
+import { TestResult } from "./TestResult";
 
 export const PuzzlePane: VoidFunctionComponent = () => {
   const puzzle = useRecoilValue(PuzzleState);
@@ -22,7 +22,15 @@ export const PuzzlePane: VoidFunctionComponent = () => {
       {puzzle.tests.map((test) => {
         return (
           <div key={test.step} className="pb-4 break-all">
-            <TestResult test={test} />
+            {test.isAny ? (
+              <div className="text-gray-500">
+                <div>Step&nbsp;{test.step}</div>
+                <div>Any</div>
+                <div>Result:&nbsp;{test.resultAnimationText}</div>
+              </div>
+            ) : (
+              <TestResult key={test.step} test={test} />
+            )}
           </div>
         );
       })}

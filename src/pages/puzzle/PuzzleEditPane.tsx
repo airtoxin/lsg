@@ -84,7 +84,7 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
           <div className="pb-4 flex items-center" key={test.step}>
             <div className="flex-grow flex-shrink break-all">
               {test.isAny ? (
-                <div>
+                <div className="text-gray-500">
                   <div>Step&nbsp;{test.step}</div>
                   <div>Any</div>
                   <div>&nbsp;</div>

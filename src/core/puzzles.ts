@@ -155,7 +155,7 @@ export const puzzles: Puzzle[] = [
   {
     id: "bX19u8C655oErZtVPvTyUK",
     description: dedent`
-      Hidden steps
+      Step of any
     `,
     rules: [
       { from: "A", to: "A" },
