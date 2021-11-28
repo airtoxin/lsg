@@ -1,18 +1,12 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  VoidFunctionComponent,
-} from "react";
+import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
 import { pagesPath } from "../../utils/$path";
 import { format } from "url";
 import { useRouter } from "next/router";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { PuzzleState, PuzzleSuccessState } from "../../states";
-import useSound from "use-sound";
+import { useRecoilState } from "recoil";
+import { PuzzleState } from "../../states";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-import { useRunTest } from "./hooks";
+import { usePuzzleSuccessEffect, useRunTest } from "./hooks";
 
 export const SolutionPane: VoidFunctionComponent = () => {
   const [puzzle, setPuzzle] = useRecoilState(PuzzleState);
@@ -33,12 +27,7 @@ export const SolutionPane: VoidFunctionComponent = () => {
     [setPuzzle]
   );
 
-  const [play] = useSound("/assets/success.wav", { interrupt: true });
-  const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
-  useEffect(() => {
-    if (puzzleSuccess) setTimeout(play, 100);
-  }, [play, puzzleSuccess]);
-
+  const puzzleSuccess = usePuzzleSuccessEffect();
   const runTest = useRunTest();
 
   const router = useRouter();

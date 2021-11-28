@@ -41,6 +41,15 @@ export const usePuzzleTestable = () => {
   );
 };
 
+export const usePuzzleSuccessEffect = () => {
+  const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
+  const [play] = useSound("/assets/success.wav", { interrupt: true });
+  useEffect(() => {
+    if (puzzleSuccess) setTimeout(play, 100);
+  }, [play, puzzleSuccess]);
+  return puzzleSuccess;
+};
+
 export const usePuzzlePublishable = () => {
   const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
   const puzzleTestable = usePuzzleTestable();
@@ -48,6 +57,15 @@ export const usePuzzlePublishable = () => {
     () => puzzleTestable && puzzleSuccess,
     [puzzleSuccess, puzzleTestable]
   );
+};
+
+export const usePuzzlePublishableEffect = () => {
+  const [play] = useSound("/assets/success.wav", { interrupt: true });
+  const puzzlePublishable = usePuzzlePublishable();
+  useEffect(() => {
+    if (puzzlePublishable) setTimeout(play, 100);
+  }, [play, puzzlePublishable]);
+  return puzzlePublishable;
 };
 
 export const useRunTest = () => {

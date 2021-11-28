@@ -1,19 +1,13 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  VoidFunctionComponent,
-} from "react";
+import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
 import { pagesPath } from "../../utils/$path";
 import { format } from "url";
 import { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
 import { PuzzleState } from "../../states";
-import useSound from "use-sound";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import {
-  usePuzzlePublishable,
+  usePuzzlePublishableEffect,
   usePuzzleTestable,
   useRunTest,
   useSetPuzzleByKv,
@@ -54,11 +48,7 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
   );
   const handleClickFixed = setRule("fixed", (_, rule) => !rule.fixed);
 
-  const [play] = useSound("/assets/success.wav", { interrupt: true });
-  const puzzlePublishable = usePuzzlePublishable();
-  useEffect(() => {
-    if (puzzlePublishable) setTimeout(play, 100);
-  }, [play, puzzlePublishable]);
+  const puzzlePublishable = usePuzzlePublishableEffect();
 
   const puzzleTestable = usePuzzleTestable();
 
