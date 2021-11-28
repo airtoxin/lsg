@@ -7,14 +7,14 @@ import {
 import { pagesPath } from "../../utils/$path";
 import { format } from "url";
 import { useRouter } from "next/router";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { PuzzleState, PuzzleSuccessState } from "../../states";
+import { useRecoilState } from "recoil";
+import { PuzzleState } from "../../states";
 import useSound from "use-sound";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-import { useRunTest } from "./hooks";
+import { usePuzzlePublishable, useRunTest } from "./hooks";
 
-export const SolutionPane: VoidFunctionComponent = () => {
+export const SolutionEditPane: VoidFunctionComponent = () => {
   const [puzzle, setPuzzle] = useRecoilState(PuzzleState);
   const handleChangeTo = useCallback(
     (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +34,10 @@ export const SolutionPane: VoidFunctionComponent = () => {
   );
 
   const [play] = useSound("/assets/success.wav", { interrupt: true });
-  const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
+  const puzzlePublishable = usePuzzlePublishable();
   useEffect(() => {
-    if (puzzleSuccess) setTimeout(play, 100);
-  }, [play, puzzleSuccess]);
+    if (puzzlePublishable) setTimeout(play, 100);
+  }, [play, puzzlePublishable]);
 
   const runTest = useRunTest();
 
@@ -62,12 +62,15 @@ export const SolutionPane: VoidFunctionComponent = () => {
           />
         </div>
       ))}
+      <div className="flex flex-col pb-4">
+        <Button>Add rule +</Button>
+      </div>
       <hr className="pb-4" />
       <div className="flex flex-col pb-4">
         <Button
-          onClick={() => (puzzleSuccess ? handleReturnToMenu() : runTest())}
+          onClick={() => (puzzlePublishable ? handleReturnToMenu() : runTest())}
         >
-          {puzzleSuccess ? "Back to menu" : "Run test"}
+          {puzzlePublishable ? "Publish puzzle" : "Run test"}
         </Button>
       </div>
     </>
