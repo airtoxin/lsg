@@ -120,10 +120,7 @@ export const useTestSuccess = (test: Test) => {
       test.result !== test.resultAnimationText
         ? undefined
         : test.result === test.expect,
-    // resultAnimationText が更新されるのはテスト実行のタイミング
-    // テスト実行のタイミングでしか ok/ng の音を鳴らさないように制御している
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [test.resultAnimationText]
+    [test.expect, test.result, test.resultAnimationText]
   );
   const [playOk] = useSound("/assets/ok.wav", { interrupt: true });
   const [playNg] = useSound("/assets/ng.wav", { interrupt: true });

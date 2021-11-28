@@ -7,6 +7,7 @@ import { Button } from "../../components/Button";
 import { useSetPuzzleByKv } from "./hooks";
 import { TestResultEdit } from "./TestResultEdit";
 import { swap } from "../../utils/array";
+import { Test } from "../../core/puzzles";
 
 export const PuzzleEditPane: VoidFunctionComponent = () => {
   const puzzle = useRecoilValue(PuzzleState);
@@ -18,14 +19,19 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
     [setPuzzleByKv]
   );
   const handleChangeInput = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      setPuzzleByKv("input", event.target.value),
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setPuzzleByKv("input", event.target.value);
+      setPuzzleByKv("tests", (tests) =>
+        tests.map<Test>((test) => ({ ...test, result: undefined }))
+      );
+    },
     [setPuzzleByKv]
   );
   const handleClickAddTestStep = useCallback(
     () =>
       setPuzzleByKv("tests", (tests) =>
-        [...tests]
+        tests
+          .map<Test>((test) => ({ ...test, result: undefined }))
           .concat([{ isAny: false, step: tests.length + 1, expect: "A" }])
           .sort((a, b) => (a.step === b.step ? 0 : a.step > b.step ? 1 : -1))
       ),
@@ -35,16 +41,22 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
   const handleChangeExpect = useCallback(
     (step: number) => (expect: string) =>
       setPuzzleByKv("tests", (tests) =>
-        tests.map((test) => (test.step !== step ? test : { ...test, expect }))
+        tests.map<Test>((test) => ({
+          ...test,
+          ...(test.step !== step ? {} : { expect }),
+          result: undefined,
+        }))
       ),
     [setPuzzleByKv]
   );
   const handleClickAny = useCallback(
     (step: number) => () =>
       setPuzzleByKv("tests", (tests) =>
-        tests.map((test) =>
-          test.step !== step ? test : { ...test, isAny: !test.isAny }
-        )
+        tests.map<Test>((test) => ({
+          ...test,
+          ...(test.step !== step ? {} : { isAny: !test.isAny }),
+          result: undefined,
+        }))
       ),
     [setPuzzleByKv]
   );
@@ -58,7 +70,9 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
   const handleClickDeleteTest = useCallback(
     (step: number) => () =>
       setPuzzleByKv("tests", (tests) =>
-        tests.filter((test) => test.step !== step)
+        tests
+          .map<Test>((test) => ({ ...test, result: undefined }))
+          .filter((test) => test.step !== step)
       ),
     [setPuzzleByKv]
   );
