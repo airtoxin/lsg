@@ -81,7 +81,7 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
 
       {puzzle.tests.map((test, i) => {
         return (
-          <div className="pb-4 flex items-center" key={test.step}>
+          <div className="pb-4 flex flex-col lg:flex-row" key={test.step}>
             <div className="flex-grow flex-shrink break-all">
               {test.isAny ? (
                 <div className="text-gray-500">
@@ -93,7 +93,7 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
                 <TestResultEdit key={test.step} test={test} />
               )}
             </div>
-            <div className="flex flex-1 flex-shrink-0">
+            <div className="flex flex-shrink-0 ml-auto">
               <Button
                 noBorder
                 className="ml-2 pl-2 pr-2 text-gray-300"

@@ -27,7 +27,7 @@ export const TestResultEdit: VoidFunctionComponent<{ test: Test }> = ({
     <div>
       <div>Step&nbsp;{test.step}</div>
       <div className="flex">
-        Expect:&nbsp;
+        <span className="break-normal">Expect:&nbsp;</span>
         <Input />
       </div>
       <div
