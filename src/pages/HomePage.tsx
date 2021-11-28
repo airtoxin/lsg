@@ -1,10 +1,10 @@
 import { NextPage } from "next";
-import { InteractiveBlock } from "../ui/InteractiveBlock";
-import { trpc } from "../../utils/trpc";
+import { InteractiveBlock } from "../components/InteractiveBlock";
+import { trpc } from "../utils/trpc";
 import Link from "next/link";
-import { pagesPath } from "../../utils/$path";
+import { pagesPath } from "../utils/$path";
 
-export const Home: NextPage = () => {
+export const HomePage: NextPage = () => {
   const { isLoading, error, data } = trpc.useQuery(["page.Home"]);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error has occurred</div>;

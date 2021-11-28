@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { z } from "zod";
 import { trpc } from "../../utils/trpc";
-import { PuzzlePanes } from "../models/PuzzlePanes";
+import { PuzzlePanes } from "./PuzzlePanes";
 import { useSetRecoilState } from "recoil";
 import { PuzzleState } from "../../states";
 import { useEffect } from "react";
@@ -11,7 +11,7 @@ const QuerySchema = z.object({
   id: z.string(),
 });
 
-export const Puzzle: NextPage = () => {
+export const PuzzlePage: NextPage = () => {
   const { id } = QuerySchema.parse(useRouter().query);
   const { isLoading, error, data } = trpc.useQuery(["page.Puzzle", { id }]);
   const setPuzzle = useSetRecoilState(PuzzleState);
