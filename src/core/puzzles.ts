@@ -12,6 +12,7 @@ export type Puzzle = {
 };
 
 export type Test = {
+  isAny: boolean;
   step: number;
   expect: string;
   result?: string;
@@ -27,7 +28,7 @@ export const puzzles: Puzzle[] = [
     `,
     rules: [{ from: "A", to: "A" }],
     input: "AAAAA",
-    tests: [{ step: 1, expect: "BBBBB" }],
+    tests: [{ isAny: false, step: 1, expect: "BBBBB" }],
   },
   {
     id: "aB8gbuPnKk4JtneGpDFnGz",
@@ -40,7 +41,7 @@ export const puzzles: Puzzle[] = [
       { from: "C", to: "C" },
     ],
     input: "ABC",
-    tests: [{ step: 1, expect: "CBA" }],
+    tests: [{ isAny: false, step: 1, expect: "CBA" }],
   },
   {
     id: "9s2wv9pfWbtgnydzy4WXW2",
@@ -52,7 +53,7 @@ export const puzzles: Puzzle[] = [
       { from: "B", to: "B" },
     ],
     input: "ABABAABBAABB",
-    tests: [{ step: 1, expect: "AAAAAA" }],
+    tests: [{ isAny: false, step: 1, expect: "AAAAAA" }],
   },
   {
     id: "1kcJ1yZ6KHqondtMEQFdYR",
@@ -65,8 +66,8 @@ export const puzzles: Puzzle[] = [
     ],
     input: "A",
     tests: [
-      { step: 1, expect: "B" },
-      { step: 2, expect: "BA" },
+      { isAny: false, step: 1, expect: "B" },
+      { isAny: false, step: 2, expect: "BA" },
     ],
   },
   {
@@ -80,10 +81,10 @@ export const puzzles: Puzzle[] = [
     ],
     input: "AB",
     tests: [
-      { step: 1, expect: "ABBA" },
-      { step: 2, expect: "ABBAAABB" },
-      { step: 3, expect: "ABBAAABBABBABBAA" },
-      { step: 4, expect: "ABBAAABBABBABBAAABBAAABBAAABBABB" },
+      { isAny: false, step: 1, expect: "ABBA" },
+      { isAny: false, step: 2, expect: "ABBAAABB" },
+      { isAny: false, step: 3, expect: "ABBAAABBABBABBAA" },
+      { isAny: false, step: 4, expect: "ABBAAABBABBABBAAABBAAABBAAABBABB" },
     ],
   },
   {
@@ -98,9 +99,9 @@ export const puzzles: Puzzle[] = [
     ],
     input: "AB",
     tests: [
-      { step: 1, expect: "AC" },
-      { step: 2, expect: "A" },
-      { step: 3, expect: "" },
+      { isAny: false, step: 1, expect: "AC" },
+      { isAny: false, step: 2, expect: "A" },
+      { isAny: false, step: 3, expect: "" },
     ],
   },
   {
@@ -114,9 +115,9 @@ export const puzzles: Puzzle[] = [
     ],
     input: "AB",
     tests: [
-      { step: 1, expect: "AAAB" },
-      { step: 2, expect: "AAAAAAAB" },
-      { step: 3, expect: "AAAAAAAAAAAAAAAB" },
+      { isAny: false, step: 1, expect: "AAAB" },
+      { isAny: false, step: 2, expect: "AAAAAAAB" },
+      { isAny: false, step: 3, expect: "AAAAAAAAAAAAAAAB" },
     ],
   },
   {
@@ -129,9 +130,9 @@ export const puzzles: Puzzle[] = [
     ],
     input: "AB",
     tests: [
-      { step: 1, expect: "ACAB" },
-      { step: 2, expect: "ACABACACAB" },
-      { step: 3, expect: "ACABACACABACABACACABACACAB" },
+      { isAny: false, step: 1, expect: "ACAB" },
+      { isAny: false, step: 2, expect: "ACABACACAB" },
+      { isAny: false, step: 3, expect: "ACABACACABACABACACABACACAB" },
     ],
   },
   {
@@ -146,9 +147,9 @@ export const puzzles: Puzzle[] = [
     ],
     input: "ABC",
     tests: [
-      { step: 1, expect: "ABC" },
-      { step: 2, expect: "ABC" },
-      { step: 3, expect: "ABC" },
+      { isAny: false, step: 1, expect: "ABC" },
+      { isAny: false, step: 2, expect: "ABC" },
+      { isAny: false, step: 3, expect: "ABC" },
     ],
   },
   {
@@ -163,8 +164,11 @@ export const puzzles: Puzzle[] = [
     ],
     input: "A",
     tests: [
-      { step: 2, expect: "CCC" },
-      { step: 5, expect: "CCCCCCCCC" },
+      { isAny: true, step: 1, expect: "" },
+      { isAny: false, step: 2, expect: "CCC" },
+      { isAny: true, step: 3, expect: "" },
+      { isAny: true, step: 4, expect: "" },
+      { isAny: false, step: 5, expect: "CCCCCCCCC" },
     ],
   },
 ];

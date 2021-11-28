@@ -1,9 +1,4 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useState,
-  VoidFunctionComponent,
-} from "react";
+import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
 import { useRecoilValue } from "recoil";
 import { PuzzleState } from "../../states";
 import { Input } from "../../components/Input";
@@ -15,7 +10,6 @@ import { swap } from "../../utils/array";
 
 export const PuzzleEditPane: VoidFunctionComponent = () => {
   const puzzle = useRecoilValue(PuzzleState);
-  const [anySteps, setAnySteps] = useState<number[]>([]);
   const setPuzzleByKv = useSetPuzzleByKv();
 
   const handleChangeDescription = useCallback(
@@ -32,31 +26,33 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
     () =>
       setPuzzleByKv("tests", (tests) =>
         [...tests]
-          .concat([{ step: tests.length + 1, expect: "A" }])
+          .concat([{ isAny: false, step: tests.length + 1, expect: "A" }])
           .sort((a, b) => (a.step === b.step ? 0 : a.step > b.step ? 1 : -1))
       ),
     [setPuzzleByKv]
   );
 
   const handleClickAny = useCallback(
-    (index: number) => () =>
-      setAnySteps((steps) =>
-        steps.indexOf(index) !== -1
-          ? steps.filter((s) => s !== index)
-          : steps.concat([index])
+    (step: number) => () =>
+      setPuzzleByKv("tests", (tests) =>
+        tests.map((test) =>
+          test.step !== step ? test : { ...test, isAny: !test.isAny }
+        )
       ),
-    []
+    [setPuzzleByKv]
   );
   const handleClickReorder = useCallback(
-    (index: number) => () =>
+    (step: number) => () =>
       setPuzzleByKv("tests", (tests) =>
-        index < 0 || tests.length - 2 < index ? tests : swap(tests, index)
+        step < 0 || tests.length - 2 < step ? tests : swap(tests, step)
       ),
     [setPuzzleByKv]
   );
   const handleClickDeleteTest = useCallback(
-    (index: number) => () =>
-      setPuzzleByKv("tests", (tests) => tests.filter((test, i) => i !== index)),
+    (step: number) => () =>
+      setPuzzleByKv("tests", (tests) =>
+        tests.filter((test) => test.step !== step)
+      ),
     [setPuzzleByKv]
   );
 
@@ -83,10 +79,10 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
 
       <hr className="pb-4" />
 
-      {puzzle.tests.map((test, i) => {
+      {puzzle.tests.map((test) => {
         return (
           <div className="pb-4 flex items-center" key={test.step}>
-            {anySteps.indexOf(i) !== -1 ? (
+            {test.isAny ? (
               <div className="flex-grow">
                 <div>Step&nbsp;{test.step}</div>
                 <div>Any</div>
@@ -99,28 +95,28 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
               <Button
                 noBorder
                 className="ml-2 pl-2 pr-2 text-gray-300"
-                onClick={handleClickAny(i)}
+                onClick={handleClickAny(test.step)}
               >
                 any
               </Button>
               <Button
                 noBorder
                 className="ml-2 pl-2 pr-2 text-gray-300"
-                onClick={handleClickReorder(i - 1)}
+                onClick={handleClickReorder(test.step - 1)}
               >
                 ↑
               </Button>
               <Button
                 noBorder
                 className="ml-2 pl-2 pr-2 text-gray-300"
-                onClick={handleClickReorder(i)}
+                onClick={handleClickReorder(test.step)}
               >
                 ↓
               </Button>
               <Button
                 noBorder
                 className="ml-2 pl-2 pr-2 text-gray-300"
-                onClick={handleClickDeleteTest(i)}
+                onClick={handleClickDeleteTest(test.step)}
               >
                 ✗
               </Button>
