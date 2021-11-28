@@ -27,17 +27,25 @@ export const useSetPuzzleByKv = () => {
   );
 };
 
-export const usePuzzlePublishable = () => {
+export const usePuzzleTestable = () => {
   const puzzle = useRecoilValue(PuzzleState);
-  const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
   return useMemo(
     () =>
-      puzzleSuccess &&
       puzzle &&
+      puzzle.input.length > 0 &&
       puzzle.tests.length > 0 &&
       puzzle.rules.length > 0 &&
-      puzzle.input.length > 0,
-    [puzzle, puzzleSuccess]
+      puzzle.rules.every((rule) => rule.from.length > 0),
+    [puzzle]
+  );
+};
+
+export const usePuzzlePublishable = () => {
+  const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
+  const puzzleTestable = usePuzzleTestable();
+  return useMemo(
+    () => puzzleTestable && puzzleSuccess,
+    [puzzleSuccess, puzzleTestable]
   );
 };
 

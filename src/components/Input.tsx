@@ -8,13 +8,14 @@ export const Input: VoidFunctionComponent<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
     noBorder?: boolean;
   }
-> = ({ noBorder, ...inputProps }) => (
+> = ({ noBorder, className, ...inputProps }) => (
   <input
-    className={
+    className={[
       noBorder
         ? "bg-transparent pl-2 pr-2 w-full outline-none"
-        : "bg-transparent pl-2 pr-2 w-full outline-none border border-gray-50 rounded"
-    }
+        : "bg-transparent pl-2 pr-2 w-full outline-none border border-gray-50 rounded",
+      className ?? "",
+    ].join(" ")}
     {...inputProps}
   />
 );

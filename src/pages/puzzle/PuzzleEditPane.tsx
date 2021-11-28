@@ -1,30 +1,32 @@
-import {
-  ChangeEvent,
-  MouseEvent,
-  useCallback,
-  VoidFunctionComponent,
-} from "react";
-import { TestResult } from "./TestResult";
+import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
 import { useRecoilValue } from "recoil";
 import { PuzzleState } from "../../states";
 import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
 import { Button } from "../../components/Button";
 import { useSetPuzzleByKv } from "./hooks";
+import { TestResultEdit } from "./TestResultEdit";
 
 export const PuzzleEditPane: VoidFunctionComponent = () => {
   const puzzle = useRecoilValue(PuzzleState);
   const setPuzzleByKv = useSetPuzzleByKv();
 
-  const handleChangeTextAreaValue = useCallback(
+  const handleChangeDescription = useCallback(
     (event: ChangeEvent<HTMLTextAreaElement>) =>
       setPuzzleByKv("description", event.target.value),
     [setPuzzleByKv]
   );
+  const handleChangeInput = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      setPuzzleByKv("input", event.target.value),
+    [setPuzzleByKv]
+  );
   const handleClickAddTestStep = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) =>
+    () =>
       setPuzzleByKv("tests", (tests) =>
-        tests.concat([{ step: 1, expect: "A" }])
+        [...tests]
+          .concat([{ step: tests.length + 1, expect: "A" }])
+          .sort((a, b) => (a.step === b.step ? 0 : a.step > b.step ? 1 : -1))
       ),
     [setPuzzleByKv]
   );
@@ -38,20 +40,24 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
           <TextArea
             className="leading-4 h-24 pt-2"
             value={puzzle.description}
-            onChange={handleChangeTextAreaValue}
+            onChange={handleChangeDescription}
           />
         </div>
       </div>
+
       <div className="pb-4">
         <div className="flex">
           <div>Input:&nbsp;</div>
-          <Input />
+          <Input value={puzzle.input} onChange={handleChangeInput} />
         </div>
       </div>
+
+      <hr className="pb-4" />
+
       {puzzle.tests.map((test) => {
         return (
           <div className="pb-4" key={test.step}>
-            <TestResult key={test.step} test={test} />
+            <TestResultEdit key={test.step} test={test} />
           </div>
         );
       })}

@@ -11,8 +11,8 @@ export const EditPuzzlePage: VoidFunctionComponent = () => {
   useEffect(() => {
     setPuzzle({
       id: shortUuid.generate(),
-      description: "description here",
-      input: "input",
+      description: "",
+      input: "",
       rules: [],
       tests: [],
     });
