@@ -1,4 +1,9 @@
-import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
+import {
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+  VoidFunctionComponent,
+} from "react";
 import { TestResult } from "./TestResult";
 import { useRecoilValue } from "recoil";
 import { PuzzleState } from "../../states";
@@ -10,9 +15,17 @@ import { useSetPuzzleByKv } from "./hooks";
 export const PuzzleEditPane: VoidFunctionComponent = () => {
   const puzzle = useRecoilValue(PuzzleState);
   const setPuzzleByKv = useSetPuzzleByKv();
+
   const handleChangeTextAreaValue = useCallback(
     (event: ChangeEvent<HTMLTextAreaElement>) =>
       setPuzzleByKv("description", event.target.value),
+    [setPuzzleByKv]
+  );
+  const handleClickAddTestStep = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) =>
+      setPuzzleByKv("tests", (tests) =>
+        tests.concat([{ step: 1, expect: "A" }])
+      ),
     [setPuzzleByKv]
   );
 
@@ -36,11 +49,15 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
         </div>
       </div>
       {puzzle.tests.map((test) => {
-        return <TestResult key={test.step} test={test} />;
+        return (
+          <div className="pb-4" key={test.step}>
+            <TestResult key={test.step} test={test} />
+          </div>
+        );
       })}
       <div className="pb-4">
         <div className="flex flex-col">
-          <Button>Add test step +</Button>
+          <Button onClick={handleClickAddTestStep}>Add test step +</Button>
         </div>
       </div>
     </>

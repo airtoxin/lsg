@@ -20,7 +20,11 @@ export const PuzzlePane: VoidFunctionComponent = () => {
         <div>Input: {puzzle.input}</div>
       </div>
       {puzzle.tests.map((test) => {
-        return <TestResult key={test.step} test={test} />;
+        return (
+          <div key={test.step} className="pb-4">
+            <TestResult test={test} />
+          </div>
+        );
       })}
     </>
   );
