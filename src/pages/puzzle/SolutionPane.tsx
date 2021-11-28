@@ -53,11 +53,11 @@ export const SolutionPane: VoidFunctionComponent = () => {
           <div className="text-center">{rule.from}</div>
           <div className="ml-4 mr-4">=&gt;</div>
           <Input
-            noBorder={rule.fixed}
+            noBorder={rule.fixed ?? undefined}
             type="text"
             value={rule.to}
             onChange={handleChangeTo(i)}
-            disabled={rule.fixed}
+            disabled={rule.fixed ?? undefined}
             style={rule.fixed ? { pointerEvents: "none" } : {}}
           />
         </div>

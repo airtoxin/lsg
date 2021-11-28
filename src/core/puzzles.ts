@@ -1,23 +1,32 @@
 import dedent from "ts-dedent";
-import { Rule } from "./LSystem";
+import { z } from "zod";
 
-export type PuzzleRule = Rule & { fixed?: boolean };
+export const Puzzle = z.lazy(() =>
+  z.object({
+    id: z.string(),
+    description: z.string(),
+    rules: z.array(PuzzleRule).min(1),
+    input: z.string().min(1),
+    tests: z.array(Test).min(1),
+  })
+);
+export type Puzzle = z.infer<typeof Puzzle>;
 
-export type Puzzle = {
-  id: string;
-  description: string;
-  rules: PuzzleRule[];
-  input: string;
-  tests: Test[];
-};
+export const PuzzleRule = z.object({
+  from: z.string().min(1),
+  to: z.string(),
+  fixed: z.boolean().nullish(),
+});
+export type PuzzleRule = z.infer<typeof PuzzleRule>;
 
-export type Test = {
-  isAny: boolean;
-  step: number;
-  expect: string;
-  result?: string;
-  resultAnimationText?: string;
-};
+export const Test = z.object({
+  isAny: z.boolean(),
+  step: z.number().int(),
+  expect: z.string(),
+  result: z.string().nullish(),
+  resultAnimationText: z.string().nullish(),
+});
+export type Test = z.infer<typeof Test>;
 
 export const puzzles: Puzzle[] = [
   {

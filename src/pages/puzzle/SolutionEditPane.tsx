@@ -20,6 +20,7 @@ import {
 } from "./hooks";
 import { PuzzleRule } from "../../core/puzzles";
 import { swap } from "../../utils/array";
+import { trpc } from "../../utils/trpc";
 
 export const SolutionEditPane: VoidFunctionComponent = () => {
   const puzzle = useRecoilValue(PuzzleState);
@@ -63,10 +64,15 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
 
   const runTest = useRunTest();
 
+  const addPuzzleMutation = trpc.useMutation(["page.AddPuzzle"]);
   const router = useRouter();
-  const handleReturnToMenu = useCallback(() => {
-    router.push(format(pagesPath.$url()));
-  }, [router]);
+  const handlePublish = useCallback(() => {
+    if (puzzle != null) {
+      addPuzzleMutation.mutateAsync(puzzle).then((p) => {
+        router.push(format(pagesPath.puzzle._id(p.id).$url()));
+      });
+    }
+  }, [addPuzzleMutation, puzzle, router]);
 
   const handleClickAddRule = useCallback(
     () =>
@@ -101,11 +107,11 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
           </div>
           <div className="ml-4 mr-4">=&gt;</div>
           <Input
-            noBorder={rule.fixed}
+            noBorder={rule.fixed ?? undefined}
             type="text"
             value={rule.to}
             onChange={handleChangeTo(i)}
-            disabled={rule.fixed}
+            disabled={rule.fixed ?? undefined}
             style={rule.fixed ? { pointerEvents: "none" } : {}}
           />
           <Button
@@ -145,7 +151,7 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
       <div className="flex flex-col pb-4">
         <Button
           disabled={!puzzleTestable}
-          onClick={() => (puzzlePublishable ? handleReturnToMenu() : runTest())}
+          onClick={() => (puzzlePublishable ? handlePublish() : runTest())}
         >
           {puzzlePublishable ? "Publish puzzle" : "Run test"}
         </Button>
