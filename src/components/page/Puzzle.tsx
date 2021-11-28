@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { z } from "zod";
 import { trpc } from "../../utils/trpc";
-import { PuzzlePanes } from "../models/puzzle/PuzzlePanes";
+import { PuzzlePanes } from "../models/PuzzlePanes";
 import { useSetRecoilState } from "recoil";
 import { PuzzleState } from "../../states";
 import { useEffect } from "react";

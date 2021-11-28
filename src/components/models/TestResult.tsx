@@ -1,5 +1,5 @@
 import { useMemo, VoidFunctionComponent } from "react";
-import { Test } from "../../../core/puzzles";
+import { Test } from "../../core/puzzles";
 
 export const TestResult: VoidFunctionComponent<{ test: Test }> = ({ test }) => {
   const testSuccess = useMemo(

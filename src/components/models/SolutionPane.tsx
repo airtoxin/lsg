@@ -5,12 +5,12 @@ import {
   useRef,
   VoidFunctionComponent,
 } from "react";
-import { lSystem } from "../../../core/LSystem";
-import { pagesPath } from "../../../utils/$path";
+import { lSystem } from "../../core/LSystem";
+import { pagesPath } from "../../utils/$path";
 import { format } from "url";
 import { useRouter } from "next/router";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { PuzzleState, PuzzleSuccessState } from "../../../states";
+import { PuzzleState, PuzzleSuccessState } from "../../states";
 
 export const SolutionPane: VoidFunctionComponent = () => {
   const [puzzle, setPuzzle] = useRecoilState(PuzzleState);

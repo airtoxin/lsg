@@ -1,6 +1,6 @@
 import { VoidFunctionComponent } from "react";
 import { PuzzlePane } from "./PuzzlePane";
-import { SolutionPane } from "../solution/SolutionPane";
+import { SolutionPane } from "./SolutionPane";
 
 export const PuzzlePanes: VoidFunctionComponent = () => {
   return (
