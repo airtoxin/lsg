@@ -1,29 +1,43 @@
-import { VoidFunctionComponent } from "react";
+import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
 import { TestResult } from "./TestResult";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { PuzzleState } from "../../states";
 import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
-import dedent from "ts-dedent";
+import { Puzzle } from "../../core/puzzles";
+import { Button } from "../../components/Button";
 
 export const PuzzleEditPane: VoidFunctionComponent = () => {
-  const puzzle = useRecoilValue(PuzzleState);
-  if (puzzle == null) return null;
+  const [puzzle, setPuzzle] = useRecoilState(PuzzleState);
+  const setPuzzleByKv = useCallback(
+    <K extends keyof Puzzle>(key: K, value: Puzzle[K]) => {
+      setPuzzle((puzzle) =>
+        puzzle == null
+          ? puzzle
+          : {
+              ...puzzle,
+              [key]: value,
+            }
+      );
+    },
+    [setPuzzle]
+  );
+  const handleChangeTextAreaValue = useCallback(
+    (event: ChangeEvent<HTMLTextAreaElement>) =>
+      setPuzzleByKv("description", event.target.value),
+    [setPuzzleByKv]
+  );
 
+  if (puzzle == null) return null;
   return (
     <>
       <div className="pb-4">
         <div className="flex text-gray-400 text-sm">
-          <div>Description:&nbsp;</div>
+          <div className="leading-4 pt-2">Description:&nbsp;</div>
           <TextArea
             className="leading-4 h-24 pt-2"
-            value={dedent`
-              f
-              f
-              f
-              f
-              f
-            `}
+            value={puzzle.description}
+            onChange={handleChangeTextAreaValue}
           />
         </div>
       </div>
@@ -36,6 +50,11 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
       {puzzle.tests.map((test) => {
         return <TestResult key={test.step} test={test} />;
       })}
+      <div className="pb-4">
+        <div className="flex flex-col">
+          <Button>Add test step +</Button>
+        </div>
+      </div>
     </>
   );
 };

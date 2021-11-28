@@ -13,6 +13,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { PuzzleState, PuzzleSuccessState } from "../../states";
 import useSound from "use-sound";
 import { Input } from "../../components/Input";
+import { Button } from "../../components/Button";
 
 export const SolutionPane: VoidFunctionComponent = () => {
   const [puzzle, setPuzzle] = useRecoilState(PuzzleState);
@@ -99,14 +100,13 @@ export const SolutionPane: VoidFunctionComponent = () => {
       ))}
       <hr className="pb-4" />
       <div className="flex flex-col pb-4">
-        <button
-          className="flex justify-center items-center border border-gray-50 font-bold rounded p-0.5 bg-gray-900 hover:bg-gray-700 active:bg-gray-500"
+        <Button
           onClick={() =>
             puzzleSuccess ? handleReturnToMenu() : handleRunTest()
           }
         >
           {puzzleSuccess ? "Back to menu" : "Run test"}
-        </button>
+        </Button>
       </div>
     </>
   );
