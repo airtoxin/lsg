@@ -42,9 +42,9 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
     [setPuzzleByKv]
   );
   const handleClickReorder = useCallback(
-    (step: number) => () =>
+    (index: number) => () =>
       setPuzzleByKv("tests", (tests) =>
-        step < 0 || tests.length - 2 < step ? tests : swap(tests, step)
+        index < 0 || tests.length - 2 < index ? tests : swap(tests, index)
       ),
     [setPuzzleByKv]
   );
@@ -79,19 +79,21 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
 
       <hr className="pb-4" />
 
-      {puzzle.tests.map((test) => {
+      {puzzle.tests.map((test, i) => {
         return (
           <div className="pb-4 flex items-center" key={test.step}>
-            {test.isAny ? (
-              <div className="flex-grow">
-                <div>Step&nbsp;{test.step}</div>
-                <div>Any</div>
-                <div>&nbsp;</div>
-              </div>
-            ) : (
-              <TestResultEdit key={test.step} test={test} />
-            )}
-            <div className="flex">
+            <div className="flex-grow flex-shrink break-all">
+              {test.isAny ? (
+                <div>
+                  <div>Step&nbsp;{test.step}</div>
+                  <div>Any</div>
+                  <div>&nbsp;</div>
+                </div>
+              ) : (
+                <TestResultEdit key={test.step} test={test} />
+              )}
+            </div>
+            <div className="flex flex-1 flex-shrink-0">
               <Button
                 noBorder
                 className="ml-2 pl-2 pr-2 text-gray-300"
@@ -102,14 +104,14 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
               <Button
                 noBorder
                 className="ml-2 pl-2 pr-2 text-gray-300"
-                onClick={handleClickReorder(test.step - 1)}
+                onClick={handleClickReorder(i - 1)}
               >
                 ↑
               </Button>
               <Button
                 noBorder
                 className="ml-2 pl-2 pr-2 text-gray-300"
-                onClick={handleClickReorder(test.step)}
+                onClick={handleClickReorder(i)}
               >
                 ↓
               </Button>
