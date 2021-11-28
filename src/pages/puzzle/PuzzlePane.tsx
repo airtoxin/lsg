@@ -21,7 +21,7 @@ export const PuzzlePane: VoidFunctionComponent = () => {
       </div>
       {puzzle.tests.map((test) => {
         return (
-          <div key={test.step} className="pb-4">
+          <div key={test.step} className="pb-4 break-all">
             <TestResult test={test} />
           </div>
         );
