@@ -81,7 +81,7 @@ export const SolutionPane: VoidFunctionComponent = () => {
   }, [router]);
 
   return (
-    <div className="block p-4 m-0 w-full flex-shrink-0 sm:flex-shrink overflow-scroll border border-gray-50">
+    <>
       {puzzle?.rules.map((rule, i) => (
         <div key={i} className="pb-4 flex items-center">
           <div className="text-center">{rule.from}</div>
@@ -110,6 +110,6 @@ export const SolutionPane: VoidFunctionComponent = () => {
           {puzzleSuccess ? "Back to menu" : "Run test"}
         </button>
       </div>
-    </div>
+    </>
   );
 };

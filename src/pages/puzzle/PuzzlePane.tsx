@@ -8,7 +8,7 @@ export const PuzzlePane: VoidFunctionComponent = () => {
   if (puzzle == null) return null;
 
   return (
-    <div className="block p-4 m-0 w-full h-full overflow-y-scroll border border-gray-50">
+    <>
       <div className="pb-4">
         {puzzle.description.split("\n").map((desc) => (
           <div key={desc} className="text-gray-500 text-sm">
@@ -22,6 +22,6 @@ export const PuzzlePane: VoidFunctionComponent = () => {
       {puzzle.tests.map((test) => {
         return <TestResult key={test.step} test={test} />;
       })}
-    </div>
+    </>
   );
 };

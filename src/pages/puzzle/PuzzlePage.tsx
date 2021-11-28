@@ -2,10 +2,12 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { z } from "zod";
 import { trpc } from "../../utils/trpc";
-import { PuzzlePanes } from "./PuzzlePanes";
 import { useSetRecoilState } from "recoil";
 import { PuzzleState } from "../../states";
 import { useEffect } from "react";
+import { PuzzlePageLayout } from "./PuzzlePageLayout";
+import { PuzzlePane } from "./PuzzlePane";
+import { SolutionPane } from "./SolutionPane";
 
 const QuerySchema = z.object({
   id: z.string(),
@@ -24,8 +26,9 @@ export const PuzzlePage: NextPage = () => {
   if (data == null) return <div>Something wrong...</div>;
 
   return (
-    <div className="flex-grow flex flex-col sm:flex-row">
-      <PuzzlePanes />
-    </div>
+    <PuzzlePageLayout>
+      <PuzzlePane />
+      <SolutionPane />
+    </PuzzlePageLayout>
   );
 };

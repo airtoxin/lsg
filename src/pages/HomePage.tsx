@@ -20,6 +20,13 @@ export const HomePage: NextPage = () => {
             </a>
           </Link>
         ))}
+        <Link href={pagesPath.puzzle.edit.$url()}>
+          <a>
+            <InteractiveBlock className="h-20 w-32">
+              Edit puzzle
+            </InteractiveBlock>
+          </a>
+        </Link>
       </div>
     </div>
   );
