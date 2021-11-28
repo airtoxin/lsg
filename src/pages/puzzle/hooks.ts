@@ -1,8 +1,9 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Puzzle, Test } from "../../core/puzzles";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { PuzzleState, PuzzleSuccessState } from "../../states";
 import { lSystem } from "../../core/LSystem";
+import useSound from "use-sound";
 
 export const useSetPuzzleByKv = () => {
   const setPuzzle = useSetRecoilState(PuzzleState);
@@ -94,13 +95,25 @@ export const useRunTest = () => {
 };
 
 export const useTestSuccess = (test: Test) => {
-  return useMemo(
+  const testSuccess = useMemo(
     () =>
       test.result == null ||
       test.resultAnimationText == null ||
       test.result !== test.resultAnimationText
         ? undefined
         : test.result === test.expect,
-    [test.expect, test.result, test.resultAnimationText]
+    // resultAnimationText が更新されるのはテスト実行のタイミング
+    // テスト実行のタイミングでしか ok/ng の音を鳴らさないように制御している
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [test.resultAnimationText]
   );
+  const [playOk] = useSound("/assets/ok.wav", { interrupt: true });
+  const [playNg] = useSound("/assets/ng.wav", { interrupt: true });
+  useEffect(() => {
+    if (testSuccess != null) {
+      testSuccess ? playOk() : playNg();
+    }
+  }, [playNg, playOk, testSuccess]);
+
+  return testSuccess;
 };

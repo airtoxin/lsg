@@ -1,11 +1,5 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  VoidFunctionComponent,
-} from "react";
+import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
 import { Test } from "../../core/puzzles";
-import useSound from "use-sound";
 import { Input } from "../../components/Input";
 import { useTestSuccess } from "./hooks";
 
@@ -13,14 +7,7 @@ export const TestResultEdit: VoidFunctionComponent<{
   test: Test;
   onChangeExpect: (expect: string) => unknown;
 }> = ({ test, onChangeExpect }) => {
-  const [playOk] = useSound("/assets/ok.wav", { interrupt: true });
-  const [playNg] = useSound("/assets/ng.wav", { interrupt: true });
-
   const testSuccess = useTestSuccess(test);
-  useEffect(() => {
-    if (testSuccess == null) return;
-    testSuccess ? playOk() : playNg();
-  }, [playNg, playOk, testSuccess]);
 
   const handleChangeExpect = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>

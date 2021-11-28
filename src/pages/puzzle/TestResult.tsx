@@ -1,24 +1,9 @@
-import { useEffect, useMemo, VoidFunctionComponent } from "react";
+import { VoidFunctionComponent } from "react";
 import { Test } from "../../core/puzzles";
-import useSound from "use-sound";
+import { useTestSuccess } from "./hooks";
 
 export const TestResult: VoidFunctionComponent<{ test: Test }> = ({ test }) => {
-  const [playOk] = useSound("/assets/ok.wav", { interrupt: true });
-  const [playNg] = useSound("/assets/ng.wav", { interrupt: true });
-
-  const testSuccess = useMemo(
-    () =>
-      test.result == null ||
-      test.resultAnimationText == null ||
-      test.result !== test.resultAnimationText
-        ? undefined
-        : test.result === test.expect,
-    [test.expect, test.result, test.resultAnimationText]
-  );
-  useEffect(() => {
-    if (testSuccess == null) return;
-    testSuccess ? playOk() : playNg();
-  }, [playNg, playOk, testSuccess]);
+  const testSuccess = useTestSuccess(test);
 
   return (
     <div>
