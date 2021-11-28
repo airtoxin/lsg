@@ -32,6 +32,13 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
     [setPuzzleByKv]
   );
 
+  const handleChangeExpect = useCallback(
+    (step: number) => (expect: string) =>
+      setPuzzleByKv("tests", (tests) =>
+        tests.map((test) => (test.step !== step ? test : { ...test, expect }))
+      ),
+    [setPuzzleByKv]
+  );
   const handleClickAny = useCallback(
     (step: number) => () =>
       setPuzzleByKv("tests", (tests) =>
@@ -90,7 +97,11 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
                   <div>&nbsp;</div>
                 </div>
               ) : (
-                <TestResultEdit key={test.step} test={test} />
+                <TestResultEdit
+                  key={test.step}
+                  test={test}
+                  onChangeExpect={handleChangeExpect(test.step)}
+                />
               )}
             </div>
             <div className="flex flex-shrink-0 ml-auto">

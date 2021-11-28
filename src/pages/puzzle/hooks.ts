@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from "react";
-import { Puzzle } from "../../core/puzzles";
+import { Puzzle, Test } from "../../core/puzzles";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { PuzzleState, PuzzleSuccessState } from "../../states";
 import { lSystem } from "../../core/LSystem";
@@ -91,4 +91,16 @@ export const useRunTest = () => {
       });
     }, 10);
   }, [setPuzzleByKv]);
+};
+
+export const useTestSuccess = (test: Test) => {
+  return useMemo(
+    () =>
+      test.result == null ||
+      test.resultAnimationText == null ||
+      test.result !== test.resultAnimationText
+        ? undefined
+        : test.result === test.expect,
+    [test.expect, test.result, test.resultAnimationText]
+  );
 };

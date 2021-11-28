@@ -12,9 +12,9 @@ export const EditPuzzlePage: VoidFunctionComponent = () => {
     setPuzzle({
       id: shortUuid.generate(),
       description: "",
-      input: "",
-      rules: [],
-      tests: [],
+      input: "A",
+      rules: [{ from: "A", to: "B" }],
+      tests: [{ isAny: false, step: 1, expect: "B" }],
     });
   }, [setPuzzle]);
 

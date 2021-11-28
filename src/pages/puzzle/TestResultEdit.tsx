@@ -1,34 +1,39 @@
-import { useEffect, useMemo, VoidFunctionComponent } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  VoidFunctionComponent,
+} from "react";
 import { Test } from "../../core/puzzles";
 import useSound from "use-sound";
 import { Input } from "../../components/Input";
+import { useTestSuccess } from "./hooks";
 
-export const TestResultEdit: VoidFunctionComponent<{ test: Test }> = ({
-  test,
-}) => {
+export const TestResultEdit: VoidFunctionComponent<{
+  test: Test;
+  onChangeExpect: (expect: string) => unknown;
+}> = ({ test, onChangeExpect }) => {
   const [playOk] = useSound("/assets/ok.wav", { interrupt: true });
   const [playNg] = useSound("/assets/ng.wav", { interrupt: true });
 
-  const testSuccess = useMemo(
-    () =>
-      test.result == null ||
-      test.resultAnimationText == null ||
-      test.result !== test.resultAnimationText
-        ? undefined
-        : test.result === test.expect,
-    [test.expect, test.result, test.resultAnimationText]
-  );
+  const testSuccess = useTestSuccess(test);
   useEffect(() => {
     if (testSuccess == null) return;
     testSuccess ? playOk() : playNg();
   }, [playNg, playOk, testSuccess]);
+
+  const handleChangeExpect = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      onChangeExpect(event.target.value),
+    [onChangeExpect]
+  );
 
   return (
     <div>
       <div>Step&nbsp;{test.step}</div>
       <div className="flex">
         <span className="break-normal">Expect:&nbsp;</span>
-        <Input />
+        <Input value={test.expect} onChange={handleChangeExpect} />
       </div>
       <div
         className={
