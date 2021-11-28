@@ -60,10 +60,22 @@ export const useRunTest = () => {
         return {
           ...test,
           result,
-          resultAnimationText: result.slice(0, 1),
+          resultAnimationText: undefined,
         };
       })
     );
+    setTimeout(() => {
+      setPuzzleByKv("tests", (tests, puzzle) =>
+        tests.map((test) => {
+          const result = lSystem.exec(puzzle.input, puzzle.rules, test.step);
+          return {
+            ...test,
+            result,
+            resultAnimationText: result.slice(0, 1),
+          };
+        })
+      );
+    }, 0);
     intervalRef.current = window.setInterval(() => {
       setPuzzleByKv("tests", (tests) => {
         if (tests.every((test) => test.result === test.resultAnimationText)) {
