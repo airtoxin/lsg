@@ -1,10 +1,12 @@
 import { VoidFunctionComponent } from "react";
-import { Puzzle } from "../../../core/puzzles";
 import { TestResult } from "../test/TestResult";
+import { useRecoilValue } from "recoil";
+import { PuzzleState } from "../../../states";
 
-export const PuzzlePane: VoidFunctionComponent<{ puzzle: Puzzle }> = ({
-  puzzle,
-}) => {
+export const PuzzlePane: VoidFunctionComponent = () => {
+  const puzzle = useRecoilValue(PuzzleState);
+  if (puzzle == null) return null;
+
   return (
     <div className="block p-4 m-0 w-full h-full overflow-y-scroll border border-gray-50">
       <div className="pb-4">

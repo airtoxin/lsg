@@ -2,19 +2,18 @@ import {
   ChangeEvent,
   useCallback,
   useMemo,
-  useState,
+  useRef,
   VoidFunctionComponent,
 } from "react";
-import { Puzzle } from "../../../core/puzzles";
 import { lSystem } from "../../../core/LSystem";
 import { pagesPath } from "../../../utils/$path";
 import { format } from "url";
 import { useRouter } from "next/router";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { PuzzleState, PuzzleSuccessState } from "../../../states";
 
-export const SolutionPane: VoidFunctionComponent<{ puzzle: Puzzle }> = ({
-  puzzle: p,
-}) => {
-  const [puzzle, setPuzzle] = useState(p);
+export const SolutionPane: VoidFunctionComponent = () => {
+  const [puzzle, setPuzzle] = useRecoilState(PuzzleState);
   const handleChangeTo = useCallback(
     (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value;
@@ -32,31 +31,44 @@ export const SolutionPane: VoidFunctionComponent<{ puzzle: Puzzle }> = ({
     [setPuzzle]
   );
 
-  const puzzleSuccess = useMemo(() => {
-    return puzzle == null
-      ? undefined
-      : puzzle.tests.every(
-          (test) =>
-            test.result != null &&
-            test.resultAnimationText != null &&
-            test.result === test.expect &&
-            test.resultAnimationText === test.expect
-        );
-  }, [puzzle]);
+  const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
 
+  const intervalRef = useRef(0);
   const handleRunTest = useCallback(() => {
+    clearInterval(intervalRef.current);
     setPuzzle((puzzle) => {
-      return puzzle == null
-        ? puzzle
-        : {
-            ...puzzle,
-            tests: puzzle.tests.map((test) => ({
-              ...test,
-              result: lSystem.exec(puzzle.input, puzzle.rules, test.step),
-              resultAnimationText: "",
-            })),
+      if (puzzle == null) return puzzle;
+      return {
+        ...puzzle,
+        tests: puzzle.tests.map((test) => {
+          const result = lSystem.exec(puzzle.input, puzzle.rules, test.step);
+          return {
+            ...test,
+            result,
+            resultAnimationText: result.slice(0, 1),
           };
+        }),
+      };
     });
+    intervalRef.current = window.setInterval(() => {
+      setPuzzle((puzzle) => {
+        if (puzzle == null) return puzzle;
+        if (
+          puzzle.tests.every((test) => test.result === test.resultAnimationText)
+        )
+          clearInterval(intervalRef.current);
+        return {
+          ...puzzle,
+          tests: puzzle.tests.map((test) => ({
+            ...test,
+            resultAnimationText: test.result?.slice(
+              0,
+              (test.resultAnimationText?.length ?? 0) + 1
+            ),
+          })),
+        };
+      });
+    }, 100);
   }, [setPuzzle]);
   const router = useRouter();
   const handleReturnToMenu = useCallback(() => {
@@ -65,7 +77,7 @@ export const SolutionPane: VoidFunctionComponent<{ puzzle: Puzzle }> = ({
 
   return (
     <div className="block p-4 m-0 w-full flex-shrink-0 sm:flex-shrink overflow-scroll border border-gray-50">
-      {puzzle.rules.map((rule, i) => (
+      {puzzle?.rules.map((rule, i) => (
         <div key={i} className="pb-4 flex items-center">
           <div className="text-center">{rule.from}</div>
           <div className="ml-4 mr-4">=&gt;</div>
