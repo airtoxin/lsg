@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { PuzzleState, PuzzleSuccessState } from "../../states";
 import useSound from "use-sound";
+import { Input } from "../../components/Input";
 
 export const SolutionPane: VoidFunctionComponent = () => {
   const [puzzle, setPuzzle] = useRecoilState(PuzzleState);
@@ -86,16 +87,13 @@ export const SolutionPane: VoidFunctionComponent = () => {
         <div key={i} className="pb-4 flex items-center">
           <div className="text-center">{rule.from}</div>
           <div className="ml-4 mr-4">=&gt;</div>
-          <input
-            className={
-              rule.fixed
-                ? "bg-transparent pl-2 pr-2 w-full outline-none"
-                : "bg-transparent border border-gray-50 rounded pl-2 pr-2 w-full outline-none"
-            }
+          <Input
+            noBorder={rule.fixed}
             type="text"
             value={rule.to}
             onChange={handleChangeTo(i)}
             disabled={rule.fixed}
+            style={rule.fixed ? { pointerEvents: "none" } : {}}
           />
         </div>
       ))}

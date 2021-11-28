@@ -11,7 +11,7 @@ export const PuzzlePane: VoidFunctionComponent = () => {
     <>
       <div className="pb-4">
         {puzzle.description.split("\n").map((desc) => (
-          <div key={desc} className="text-gray-500 text-sm">
+          <div key={desc} className="text-gray-400 text-sm">
             {desc}
           </div>
         ))}
