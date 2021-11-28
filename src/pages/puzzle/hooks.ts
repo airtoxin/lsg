@@ -89,6 +89,6 @@ export const useRunTest = () => {
           ),
         }));
       });
-    }, 100);
+    }, 10);
   }, [setPuzzleByKv]);
 };
