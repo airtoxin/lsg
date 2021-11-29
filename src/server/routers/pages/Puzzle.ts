@@ -25,10 +25,8 @@ export const puzzleRouter = router()
   })
   .mutation("AddPuzzle", {
     input: Puzzle,
-    async resolve({ input: puzzle }) {
+    async resolve({ input: puzzle }): Promise<Puzzle> {
       const sanitizedPuzzle = puzzleService.sanitize(puzzle);
-      const result = await new PuzzleRepository().create(sanitizedPuzzle);
-      console.log("@result", result);
-      return puzzle;
+      return new PuzzleRepository().create(sanitizedPuzzle);
     },
   });
