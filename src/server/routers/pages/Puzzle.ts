@@ -1,14 +1,16 @@
 import { router, TRPCError } from "@trpc/server";
-import { Puzzle, puzzles } from "../../../core/puzzles";
+import { Puzzle } from "../../../core/puzzles";
 import { z } from "zod";
+import { PuzzleRepository } from "../../libs/repositories/PuzzleRepository";
+import { puzzleService } from "../../../core/PuzzleService";
 
 export const puzzleRouter = router()
   .query("Puzzle", {
     input: z.object({
-      id: z.string(),
+      id: z.string().refine((id) => !id.includes("/")),
     }),
     async resolve({ input: { id } }) {
-      const puzzle = puzzles.find((p) => p.id === id);
+      const puzzle = await new PuzzleRepository().findById(id);
       if (puzzle == null) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -24,7 +26,9 @@ export const puzzleRouter = router()
   .mutation("AddPuzzle", {
     input: Puzzle,
     async resolve({ input: puzzle }) {
-      console.log("@puzzle", puzzle);
+      const sanitizedPuzzle = puzzleService.sanitize(puzzle);
+      const result = await new PuzzleRepository().create(sanitizedPuzzle);
+      console.log("@result", result);
       return puzzle;
     },
   });
