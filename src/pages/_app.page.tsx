@@ -25,13 +25,27 @@ export default withTRPC<AppRouter>({
       ? `https://${process.env.VERCEL_URL}/api/trpc`
       : "http://localhost:3000/api/trpc";
 
+    const ONE_DAY_SECONDS = 60 * 60 * 24;
+    ctx?.res?.setHeader(
+      "Cache-Control",
+      `s-maxage=1, stale-while-revalidate=${ONE_DAY_SECONDS}`
+    );
+    ctx?.res?.setHeader("X-SSR", `1`);
+
     return {
       url,
       transformer: superjson,
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+          },
+        },
+      },
     };
   },
   /**
