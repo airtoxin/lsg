@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { PuzzleState } from "../../states";
 import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
@@ -8,10 +8,15 @@ import { useSetPuzzleByKv } from "./hooks";
 import { TestResultEdit } from "./TestResultEdit";
 import { swap } from "../../utils/array";
 import { Test } from "../../core/puzzles";
+import { puzzleService } from "../../core/PuzzleService";
 
 export const PuzzleEditPane: VoidFunctionComponent = () => {
-  const puzzle = useRecoilValue(PuzzleState);
+  const [puzzle, setPuzzle] = useRecoilState(PuzzleState);
   const setPuzzleByKv = useSetPuzzleByKv();
+
+  const handleClickRandomize = useCallback(() => {
+    setPuzzle(puzzleService.randomize());
+  }, [setPuzzle]);
 
   const handleChangeDescription = useCallback(
     (event: ChangeEvent<HTMLTextAreaElement>) =>
@@ -80,6 +85,12 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
   if (puzzle == null) return null;
   return (
     <>
+      <div className="pb-4">
+        <Button className="ml-auto pl-2 pr-2" onClick={handleClickRandomize}>
+          Randomize
+        </Button>
+      </div>
+
       <div className="pb-4">
         <div className="flex text-gray-400 text-sm">
           <div className="leading-4 pt-2">Description:&nbsp;</div>

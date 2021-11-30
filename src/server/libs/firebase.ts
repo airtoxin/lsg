@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-import { getDatabase as gdb } from "firebase-admin/database";
+import * as firebase from "firebase-admin/database";
 import {
   FIREBASE_CLIENT_EMAIL,
   FIREBASE_DATABASE_URL,
@@ -20,5 +20,5 @@ export const getDatabase = () => {
       databaseURL: FIREBASE_DATABASE_URL,
     });
   }
-  return gdb();
+  return firebase.getDatabase();
 };

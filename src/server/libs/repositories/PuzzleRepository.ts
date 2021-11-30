@@ -1,12 +1,10 @@
 import { Puzzle, puzzles } from "../../../core/puzzles";
 import { Database, getDatabase } from "../firebase";
 import { PuzzleDatabaseObject } from "./PuzzleDatabaseObject";
+import { objectToArray } from "../../../utils/array";
 
 export class PuzzleRepository {
-  private db: Database;
-  constructor() {
-    this.db = getDatabase();
-  }
+  constructor(private db: Database = getDatabase()) {}
 
   async create(puzzle: Puzzle) {
     await this.db.ref(`/server/puzzles/${puzzle.id}`).set(puzzle);
@@ -29,9 +27,3 @@ export class PuzzleRepository {
     };
   }
 }
-
-const objectToArray = <T>(obj: Record<string, T>): T[] => {
-  const entries = Object.entries(obj);
-  entries.sort(([a], [b]) => (a === b ? 0 : a < b ? 1 : -1));
-  return entries.map(([_, v]) => v);
-};
