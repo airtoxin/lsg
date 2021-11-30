@@ -7,7 +7,12 @@ import { pagesPath } from "../utils/$path";
 export const HomePage: NextPage = () => {
   const { isLoading, error, data } = trpc.useQuery(["page.Home"]);
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>An error has occurred</div>;
+  if (error)
+    return (
+      <div>
+        An error has occurred: <pre>{JSON.stringify(error, null, 2)}</pre>
+      </div>
+    );
   if (data == null) return <div>Something wrong...</div>;
 
   return (
