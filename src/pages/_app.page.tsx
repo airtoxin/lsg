@@ -4,11 +4,12 @@ import { RecoilRoot } from "recoil";
 import { withTRPC } from "@trpc/next";
 import { AppRouter } from "../server/routers/app";
 import superjson from "superjson";
+import "./App.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <div className="font-mono flex flex-col bg-gray-900 h-screen w-screen text-gray-50 overflow-hidden select-none">
+      <div className="App font-mono flex flex-col bg-gray-900 h-screen w-screen text-gray-50 overflow-hidden select-none">
         <Component {...pageProps} />
       </div>
     </RecoilRoot>

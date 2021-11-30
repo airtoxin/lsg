@@ -1,0 +1,6 @@
+@supports (-webkit-touch-callout: none) {
+  .App {
+    /* The hack for Safari */
+    height: -webkit-fill-available;
+  }
+}
