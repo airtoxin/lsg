@@ -16,8 +16,8 @@ export const HomePage: NextPage = () => {
   if (data == null) return <div>Something wrong...</div>;
 
   return (
-    <div className="flex h-full w-full justify-center items-center">
-      <div className="grid gap-4 grid-cols-5 grid-rows-5">
+    <div className="p-4 flex min-h-screen w-full justify-center items-center overflow-scroll">
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
         {data.puzzleIds.map((id, i) => (
           <Link key={id} href={pagesPath.puzzle._id(id).$url()}>
             <a>

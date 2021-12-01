@@ -9,7 +9,7 @@ import "./App.css";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <div className="App font-mono flex flex-col bg-gray-900 h-screen w-screen text-gray-50 overflow-hidden select-none">
+      <div className="App font-mono flex flex-col bg-gray-900 min-h-screen w-screen text-gray-50 overflow-hidden select-none">
         <Component {...pageProps} />
       </div>
     </RecoilRoot>
