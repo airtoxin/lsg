@@ -19,7 +19,7 @@ export const puzzleRouter = router()
       }
 
       return {
-        puzzle,
+        puzzle: puzzleService.sanitize(puzzle),
       };
     },
   })

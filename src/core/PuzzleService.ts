@@ -52,7 +52,8 @@ export class PuzzleService {
       description: puzzle.description,
       input: puzzle.input,
       rules: puzzle.rules.map((rule) => ({
-        ...rule,
+        from: rule.from,
+        to: rule.fixed ? rule.to : "",
         fixed: rule.fixed || false,
       })),
       tests: puzzle.tests.map(({ isAny, step, expect }) => ({
