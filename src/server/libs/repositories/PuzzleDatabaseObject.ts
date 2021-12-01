@@ -1,5 +1,8 @@
 import { z } from "zod";
+import { Puzzle } from "../../../core/puzzles";
+import { objectToArray } from "../../../utils/array";
 
+export type PuzzleDatabaseObject = z.infer<typeof PuzzleDatabaseObject>;
 export const PuzzleDatabaseObject = z.object({
   id: z.string(),
   description: z.string(),
@@ -22,4 +25,13 @@ export const PuzzleDatabaseObject = z.object({
       resultAnimationText: z.string().nullish(),
     })
   ),
+  createdAt: z.number(),
+});
+
+export const convertToPuzzle = (dbp: PuzzleDatabaseObject): Puzzle => ({
+  id: dbp.id,
+  description: dbp.description,
+  input: dbp.input,
+  rules: objectToArray(dbp.rules),
+  tests: objectToArray(dbp.tests),
 });

@@ -16,22 +16,47 @@ export const HomePage: NextPage = () => {
   if (data == null) return <div>Something wrong...</div>;
 
   return (
-    <div className="p-4 flex min-h-screen w-full justify-center items-center overflow-scroll">
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
-        {data.puzzleIds.map((id, i) => (
-          <Link key={id} href={pagesPath.puzzle._id(id).$url()}>
+    <div className="p-4 flex flex-col min-h-screen w-full justify-center items-center overflow-scroll">
+      <div className="p-4">
+        <h2 className="pb-2">Main puzzles</h2>
+        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+          {data.puzzleIds.map((id, i) => (
+            <Link key={id} href={pagesPath.puzzle._id(id).$url()}>
+              <a>
+                <InteractiveBlock className="h-20 w-32">
+                  {i + 1}
+                </InteractiveBlock>
+              </a>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="p-4">
+        <h2 className="pb-2">Newly added</h2>
+        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+          {data.newPuzzles.map((id, i) => (
+            <Link key={id} href={pagesPath.puzzle._id(id).$url()}>
+              <a>
+                <InteractiveBlock className="h-20 w-32">
+                  {i + 1}
+                </InteractiveBlock>
+              </a>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="p-4">
+        <div className="p-4 grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+          <Link href={pagesPath.puzzle.edit.$url()}>
             <a>
-              <InteractiveBlock className="h-20 w-32">{i + 1}</InteractiveBlock>
+              <InteractiveBlock className="h-20 w-32">
+                Edit puzzle
+              </InteractiveBlock>
             </a>
           </Link>
-        ))}
-        <Link href={pagesPath.puzzle.edit.$url()}>
-          <a>
-            <InteractiveBlock className="h-20 w-32">
-              Edit puzzle
-            </InteractiveBlock>
-          </a>
-        </Link>
+        </div>
       </div>
     </div>
   );

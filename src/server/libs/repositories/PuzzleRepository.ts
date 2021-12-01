@@ -1,13 +1,16 @@
 import { Puzzle, puzzles } from "../../../core/puzzles";
 import { Database, getDatabase } from "../firebase";
-import { PuzzleDatabaseObject } from "./PuzzleDatabaseObject";
+import { convertToPuzzle, PuzzleDatabaseObject } from "./PuzzleDatabaseObject";
 import { objectToArray } from "../../../utils/array";
+import { z } from "zod";
 
 export class PuzzleRepository {
   constructor(private db: Database = getDatabase()) {}
 
   async create(puzzle: Puzzle) {
-    await this.db.ref(`/server/puzzles/${puzzle.id}`).set(puzzle);
+    await this.db
+      .ref(`/server/puzzles/${puzzle.id}`)
+      .set({ ...puzzle, createdAt: Date.now() });
     return puzzle;
   }
 
@@ -25,5 +28,21 @@ export class PuzzleRepository {
       rules: objectToArray(dbPuzzle.rules),
       tests: objectToArray(dbPuzzle.tests),
     };
+  }
+
+  async list(): Promise<Puzzle[]> {
+    const data = await this.db
+      .ref(`/server/puzzles`)
+      .orderByChild("createdAt")
+      .limitToLast(10)
+      .get();
+    const parsed = z
+      .record(z.string(), PuzzleDatabaseObject)
+      .safeParse(data.toJSON());
+    if (!parsed.success) return [];
+
+    return Object.values(parsed.data)
+      .sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1))
+      .map(convertToPuzzle);
   }
 }
