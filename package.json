@@ -34,9 +34,13 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.15.1",
+    "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.0.3",
     "@types/node": "16.11.10",
     "@types/react": "17.0.37",
+    "@types/testing-library__jest-dom": "^5.14.2",
+    "@types/testing-library__react-hooks": "^4.0.0",
     "autoprefixer": "^10.4.0",
     "eslint": "7",
     "eslint-config-next": "12.0.4",
