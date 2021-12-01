@@ -46,20 +46,31 @@ export class PuzzleService {
     };
   }
 
-  sanitize(puzzle: Puzzle): Puzzle {
+  sanitizeForSave(puzzle: Puzzle): Puzzle {
     return {
       id: generate(),
       description: puzzle.description,
       input: puzzle.input,
       rules: puzzle.rules.map((rule) => ({
         from: rule.from,
-        to: rule.fixed ? rule.to : "",
+        to: rule.to,
         fixed: rule.fixed || false,
       })),
       tests: puzzle.tests.map(({ isAny, step, expect }) => ({
         isAny,
         step,
         expect,
+      })),
+    };
+  }
+
+  sanitizeForPuzzle(puzzle: Puzzle): Puzzle {
+    const sanitized = this.sanitizeForSave(puzzle);
+    return {
+      ...sanitized,
+      rules: sanitized.rules.map((rule) => ({
+        ...rule,
+        to: rule.fixed ? rule.to : "",
       })),
     };
   }

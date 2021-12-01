@@ -19,14 +19,14 @@ export const puzzleRouter = router()
       }
 
       return {
-        puzzle: puzzleService.sanitize(puzzle),
+        puzzle: puzzleService.sanitizeForPuzzle(puzzle),
       };
     },
   })
   .mutation("AddPuzzle", {
     input: Puzzle,
     async resolve({ input: puzzle }): Promise<Puzzle> {
-      const sanitizedPuzzle = puzzleService.sanitize(puzzle);
+      const sanitizedPuzzle = puzzleService.sanitizeForSave(puzzle);
       return new PuzzleRepository().create(sanitizedPuzzle);
     },
   });

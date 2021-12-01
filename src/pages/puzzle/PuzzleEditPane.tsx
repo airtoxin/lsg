@@ -5,10 +5,10 @@ import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
 import { Button } from "../../components/Button";
 import { useSetPuzzleByKv } from "./hooks";
-import { TestResultEdit } from "./TestResultEdit";
 import { swap } from "../../utils/array";
 import { Test } from "../../core/puzzles";
 import { puzzleService } from "../../core/PuzzleService";
+import { TestResult } from "./TestResult";
 
 export const PuzzleEditPane: VoidFunctionComponent = () => {
   const [puzzle, setPuzzle] = useRecoilState(PuzzleState);
@@ -115,19 +115,11 @@ export const PuzzleEditPane: VoidFunctionComponent = () => {
         return (
           <div className="pb-4 flex flex-col lg:flex-row" key={test.step}>
             <div className="flex-grow flex-shrink break-all">
-              {test.isAny ? (
-                <div className="text-gray-500">
-                  <div>Step&nbsp;{test.step}</div>
-                  <div>Any</div>
-                  <div>&nbsp;</div>
-                </div>
-              ) : (
-                <TestResultEdit
-                  key={test.step}
-                  test={test}
-                  onChangeExpect={handleChangeExpect(test.step)}
-                />
-              )}
+              <TestResult
+                key={test.step}
+                test={test}
+                onChangeExpect={handleChangeExpect(test.step)}
+              />
             </div>
             <div className="flex flex-shrink-0 ml-auto">
               <Button
