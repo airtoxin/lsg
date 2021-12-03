@@ -5,6 +5,15 @@ import dedent from "ts-dedent";
 import { lSystem } from "./LSystem";
 
 export class PuzzleService {
+  test(puzzle: Puzzle): boolean {
+    return puzzle.tests
+      .filter((test) => !test.isAny)
+      .every(
+        (test) =>
+          lSystem.exec(puzzle.input, puzzle.rules, test.step) === test.expect
+      );
+  }
+
   randomize(seed?: string): Puzzle {
     const rng = seedrandom(seed);
 
