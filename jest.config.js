@@ -7,4 +7,7 @@ module.exports = {
     },
   },
   testEnvironment: "node",
+  moduleNameMapper: {
+    "\\.(css|scss)$": "<rootDir>/node_modules/jest-css-modules",
+  },
 };
