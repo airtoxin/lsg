@@ -1,9 +1,43 @@
 /**
  * @jest-environment jsdom
  */
-import { renderHook } from "@testing-library/react-hooks";
-import { useTestSuccess } from "./hooks";
-import { Test } from "../../core/puzzles";
+import { act, renderHook } from "@testing-library/react-hooks";
+import { useSetPuzzleByKv, useTestSuccess } from "./hooks";
+import { Puzzle, Test } from "../../core/puzzles";
+import { useRecoilState } from "recoil";
+import { PuzzleState } from "../../states";
+import { WrapperComponent } from "@testing-library/react-hooks/lib/types/react";
+
+describe("useSetPuzzleByKv", () => {
+  const createDefaultContext = () => {
+    const puzzle: Puzzle = {
+      id: "test",
+      description: "test_description",
+      rules: [],
+      input: "ABC",
+      tests: [],
+    };
+    const wrapper: WrapperComponent = ({children}) => ();
+    return { puzzle };
+  };
+
+  it("指定した key フィールドに value を設定すること", () => {
+    const { puzzle } = createDefaultContext();
+    const {
+      result: {
+        current: [puzzleState, setPuzzleState],
+      },
+    } = renderHook(() => useRecoilState(PuzzleState), { wrapper });
+    act(() => setPuzzleState(puzzle));
+    expect(puzzleState).toEqual(puzzle);
+
+    const {
+      result: { current: setPuzzleByKv },
+    } = renderHook(() => useSetPuzzleByKv());
+    act(() => setPuzzleByKv("input", "CBA"));
+    expect(puzzleState?.input).toBe("CBA");
+  });
+});
 
 describe("useTestSuccess", () => {
   const createDefaultContext = () => {
