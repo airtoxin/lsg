@@ -1,12 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import { act, renderHook } from "@testing-library/react-hooks";
+import { act, renderHook, cleanup } from "@testing-library/react-hooks";
 import { useSetPuzzleByKv, useTestSuccess } from "./hooks";
 import { Puzzle, Test } from "../../core/puzzles";
-import { useRecoilState } from "recoil";
+import { RecoilRoot, useRecoilState } from "recoil";
 import { PuzzleState } from "../../states";
 import { WrapperComponent } from "@testing-library/react-hooks/lib/types/react";
+
+afterEach(cleanup);
 
 describe("useSetPuzzleByKv", () => {
   const createDefaultContext = () => {
@@ -17,25 +19,34 @@ describe("useSetPuzzleByKv", () => {
       input: "ABC",
       tests: [],
     };
-    const wrapper: WrapperComponent = ({children}) => ();
-    return { puzzle };
+    const wrapper: WrapperComponent<{}> = ({ children }) => (
+      <RecoilRoot>{children}</RecoilRoot>
+    );
+    return { puzzle, wrapper };
   };
 
-  it("指定した key フィールドに value を設定すること", () => {
-    const { puzzle } = createDefaultContext();
-    const {
-      result: {
-        current: [puzzleState, setPuzzleState],
+  it("指定した key フィールドに value を設定すること", async () => {
+    const { puzzle, wrapper } = createDefaultContext();
+    const { result } = renderHook(
+      () => {
+        const [puzzleState, setPuzzleState] = useRecoilState(PuzzleState);
+        const setPuzzleByKv = useSetPuzzleByKv();
+        return {
+          puzzleState,
+          setPuzzleState,
+          setPuzzleByKv,
+        };
       },
-    } = renderHook(() => useRecoilState(PuzzleState), { wrapper });
-    act(() => setPuzzleState(puzzle));
-    expect(puzzleState).toEqual(puzzle);
+      {
+        wrapper,
+      }
+    );
+    expect(result.current.puzzleState).toBeUndefined();
+    act(() => result.current.setPuzzleState(puzzle));
+    expect(result.current.puzzleState).toEqual(puzzle);
 
-    const {
-      result: { current: setPuzzleByKv },
-    } = renderHook(() => useSetPuzzleByKv());
-    act(() => setPuzzleByKv("input", "CBA"));
-    expect(puzzleState?.input).toBe("CBA");
+    act(() => result.current.setPuzzleByKv("input", "CBA"));
+    expect(result.current.puzzleState?.input).toBe("CBA");
   });
 });
 
