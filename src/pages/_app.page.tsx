@@ -1,5 +1,4 @@
 import "tailwindcss/tailwind.css";
-import { Suspense } from "react";
 import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
 import { withTRPC } from "@trpc/next";
@@ -9,13 +8,11 @@ import "./App.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Suspense fallback={"...loading..."}>
-      <RecoilRoot>
-        <div className="App font-mono flex flex-col bg-gray-900 min-h-screen w-screen text-gray-50 overflow-hidden select-none">
-          <Component {...pageProps} />
-        </div>
-      </RecoilRoot>
-    </Suspense>
+    <RecoilRoot>
+      <div className="App font-mono flex flex-col bg-gray-900 min-h-screen w-screen text-gray-50 overflow-hidden select-none">
+        <Component {...pageProps} />
+      </div>
+    </RecoilRoot>
   );
 }
 
