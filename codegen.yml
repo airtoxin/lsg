@@ -1,10 +1,10 @@
 schema: src/schema.ts
-documents: 'src/**/!(*.gen).{ts,tsx}'
 generates:
   src/types.gen.ts:
     plugins:
       - typescript
   src/pages/:
+    documents: 'src/**/!(*.gen).{ts,tsx}'
     preset: near-operation-file
     presetConfig:
       extension: .gen.ts
@@ -12,7 +12,10 @@ generates:
     plugins:
       - typescript-operations
       - typescript-react-query
-  src/server/resolver-types.gen.ts:
+    config:
+      fetcher:
+        endpoint: 'http://localhost:3000/api/graphql'
+  src/server/resolvers/types.gen.ts:
     plugins:
       - typescript
       - typescript-resolvers

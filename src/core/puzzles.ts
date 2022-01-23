@@ -1,32 +1,5 @@
 import dedent from "ts-dedent";
-import { z } from "zod";
-
-export const Puzzle = z.lazy(() =>
-  z.object({
-    id: z.string(),
-    description: z.string(),
-    rules: z.array(PuzzleRule).min(1),
-    input: z.string().min(1),
-    tests: z.array(Test).min(1),
-  })
-);
-export type Puzzle = z.infer<typeof Puzzle>;
-
-export const PuzzleRule = z.object({
-  from: z.string().min(1),
-  to: z.string(),
-  fixed: z.boolean().nullish(),
-});
-export type PuzzleRule = z.infer<typeof PuzzleRule>;
-
-export const Test = z.object({
-  isAny: z.boolean(),
-  step: z.number().int(),
-  expect: z.string(),
-  result: z.string().nullish(),
-  resultAnimationText: z.string().nullish(),
-});
-export type Test = z.infer<typeof Test>;
+import { Puzzle } from "../types.gen";
 
 export const puzzles: Puzzle[] = [
   {
@@ -35,9 +8,11 @@ export const puzzles: Puzzle[] = [
       Replace all A to B
       Hint: A => B
     `,
-    rules: [{ from: "A", to: "A" }],
+    rules: [{ from: "A", to: "A", fixed: false }],
     input: "AAAAA",
     tests: [{ isAny: false, step: 1, expect: "BBBBB" }],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "aB8gbuPnKk4JtneGpDFnGz",
@@ -45,12 +20,14 @@ export const puzzles: Puzzle[] = [
       Convert ABC to CBA
     `,
     rules: [
-      { from: "A", to: "A" },
-      { from: "B", to: "B" },
-      { from: "C", to: "C" },
+      { from: "A", to: "A", fixed: false },
+      { from: "B", to: "B", fixed: false },
+      { from: "C", to: "C", fixed: false },
     ],
     input: "ABC",
     tests: [{ isAny: false, step: 1, expect: "CBA" }],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "9s2wv9pfWbtgnydzy4WXW2",
@@ -58,11 +35,13 @@ export const puzzles: Puzzle[] = [
       Delete all B
     `,
     rules: [
-      { from: "A", to: "A" },
-      { from: "B", to: "B" },
+      { from: "A", to: "A", fixed: false },
+      { from: "B", to: "B", fixed: false },
     ],
     input: "ABABAABBAABB",
     tests: [{ isAny: false, step: 1, expect: "AAAAAA" }],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "1kcJ1yZ6KHqondtMEQFdYR",
@@ -70,14 +49,16 @@ export const puzzles: Puzzle[] = [
       The step 2 gets the result of step 1 as its input
     `,
     rules: [
-      { from: "A", to: "A" },
-      { from: "B", to: "B" },
+      { from: "A", to: "A", fixed: false },
+      { from: "B", to: "B", fixed: false },
     ],
     input: "A",
     tests: [
       { isAny: false, step: 1, expect: "B" },
       { isAny: false, step: 2, expect: "BA" },
     ],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "p1iA2k4eQGEN5ajUzskDBr",
@@ -85,8 +66,8 @@ export const puzzles: Puzzle[] = [
       More steps
     `,
     rules: [
-      { from: "A", to: "A" },
-      { from: "B", to: "B" },
+      { from: "A", to: "A", fixed: false },
+      { from: "B", to: "B", fixed: false },
     ],
     input: "AB",
     tests: [
@@ -95,6 +76,8 @@ export const puzzles: Puzzle[] = [
       { isAny: false, step: 3, expect: "ABBAAABBABBABBAA" },
       { isAny: false, step: 4, expect: "ABBAAABBABBABBAAABBAAABBAAABBABB" },
     ],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "j4oA98UXR6idDuuZ1LzRjq",
@@ -102,9 +85,9 @@ export const puzzles: Puzzle[] = [
       Decreasing trend
     `,
     rules: [
-      { from: "A", to: "A" },
-      { from: "B", to: "B" },
-      { from: "C", to: "C" },
+      { from: "A", to: "A", fixed: false },
+      { from: "B", to: "B", fixed: false },
+      { from: "C", to: "C", fixed: false },
     ],
     input: "AB",
     tests: [
@@ -112,6 +95,8 @@ export const puzzles: Puzzle[] = [
       { isAny: false, step: 2, expect: "A" },
       { isAny: false, step: 3, expect: "" },
     ],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "nAuVksGnXnsrMkLK6eHfFb",
@@ -119,7 +104,7 @@ export const puzzles: Puzzle[] = [
       The rule B => AB was fixed
     `,
     rules: [
-      { from: "A", to: "A" },
+      { from: "A", to: "A", fixed: false },
       { from: "B", to: "AB", fixed: true },
     ],
     input: "AB",
@@ -128,14 +113,16 @@ export const puzzles: Puzzle[] = [
       { isAny: false, step: 2, expect: "AAAAAAAB" },
       { isAny: false, step: 3, expect: "AAAAAAAAAAAAAAAB" },
     ],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "njgvsMF2MBaG3Gjt9DrNUP",
     description: dedent``,
     rules: [
-      { from: "A", to: "A" },
+      { from: "A", to: "A", fixed: false },
       { from: "B", to: "", fixed: true },
-      { from: "C", to: "C" },
+      { from: "C", to: "C", fixed: false },
     ],
     input: "AB",
     tests: [
@@ -143,6 +130,8 @@ export const puzzles: Puzzle[] = [
       { isAny: false, step: 2, expect: "ACABACACAB" },
       { isAny: false, step: 3, expect: "ACABACACABACABACACABACACAB" },
     ],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "jXRR7pcRY5R2JtmUpwgPF1",
@@ -152,7 +141,7 @@ export const puzzles: Puzzle[] = [
     rules: [
       { from: "A", to: "", fixed: true },
       { from: "B", to: "", fixed: true },
-      { from: "C", to: "C" },
+      { from: "C", to: "C", fixed: false },
     ],
     input: "ABC",
     tests: [
@@ -160,6 +149,8 @@ export const puzzles: Puzzle[] = [
       { isAny: false, step: 2, expect: "ABC" },
       { isAny: false, step: 3, expect: "ABC" },
     ],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
   {
     id: "bX19u8C655oErZtVPvTyUK",
@@ -167,8 +158,8 @@ export const puzzles: Puzzle[] = [
       Step of any
     `,
     rules: [
-      { from: "A", to: "A" },
-      { from: "B", to: "B" },
+      { from: "A", to: "A", fixed: false },
+      { from: "B", to: "B", fixed: false },
       { from: "C", to: "A", fixed: true },
     ],
     input: "A",
@@ -179,5 +170,7 @@ export const puzzles: Puzzle[] = [
       { isAny: true, step: 4, expect: "" },
       { isAny: false, step: 5, expect: "CCCCCCCCC" },
     ],
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   },
 ];

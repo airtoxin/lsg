@@ -11,26 +11,11 @@ datasource db {
 }
 
 model Puzzle {
-  id          String       @id @default(uuid())
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  description String       @db.VarChar(255)
-  rules       PuzzleRule[]
-  tests       PuzzleTest[]
-}
-
-model PuzzleRule {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  puzzleId  String
-  puzzle    Puzzle   @relation(fields: [puzzleId], references: [id])
-}
-
-model PuzzleTest {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  puzzleId  String
-  puzzle    Puzzle   @relation(fields: [puzzleId], references: [id])
+  id          String   @id @default(uuid())
+  description String   @db.VarChar(255)
+  input       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  rules       Json
+  tests       Json
 }

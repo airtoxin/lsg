@@ -1,20 +1,23 @@
 import { NextPage } from "next";
 import { InteractiveBlock } from "../components/InteractiveBlock";
-import { trpc } from "../utils/trpc";
 import Link from "next/link";
 import { pagesPath } from "../utils/$path";
 import gql from "graphql-tag";
+import { useHomePageQuery } from "./HomePage.gen";
 
 gql`
   query HomePage {
-    me {
-      email
+    puzzles {
+      id
+    }
+    newPuzzles {
+      id
     }
   }
 `;
 
 export const HomePage: NextPage = () => {
-  const { isLoading, error, data } = trpc.useQuery(["page.Home"]);
+  const { isLoading, error, data } = useHomePageQuery();
   if (isLoading) return <div>Loading...</div>;
   if (error)
     return (
@@ -29,7 +32,7 @@ export const HomePage: NextPage = () => {
       <div className="p-4">
         <h2 className="pb-2">Main puzzles</h2>
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
-          {data.puzzleIds.map((id, i) => (
+          {data.puzzles.map(({ id }, i) => (
             <Link key={id} href={pagesPath.puzzle._id(id).$url()}>
               <a>
                 <InteractiveBlock className="h-20 w-32">
@@ -44,7 +47,7 @@ export const HomePage: NextPage = () => {
       <div className="p-4">
         <h2 className="pb-2">Newly added</h2>
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
-          {data.newPuzzles.map((id, i) => (
+          {data.newPuzzles.map(({ id }, i) => (
             <Link key={id} href={pagesPath.puzzle._id(id).$url()}>
               <a>
                 <InteractiveBlock className="h-20 w-32">
