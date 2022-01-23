@@ -1,3 +1,6 @@
+# codegen
+*.gen.*
+
 .env
 src/utils/$path.ts
 

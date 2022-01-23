@@ -5,8 +5,10 @@
     "dev": "run-p dev:*",
     "dev:next": "next dev",
     "dev:path": "pathpida --ignorePath .gitignore --watch",
+    "dev:codegen": "graphql-codegen --watch",
     "build": "run-s build:*",
     "build:path": "pathpida --ignorePath .gitignore",
+    "build:codegen": "graphql-codegen",
     "build:app": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -14,6 +16,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@graphql-yoga/node": "^0.1.0-canary-c76d3fc.0",
     "@trpc/client": "^9.15.0",
     "@trpc/next": "^9.15.0",
     "@trpc/react": "^9.15.0",
@@ -21,6 +24,7 @@
     "@types/recoil": "^0.0.9",
     "@types/seedrandom": "^3.0.1",
     "firebase-admin": "^10.0.0",
+    "graphql": "^16.2.0",
     "next": "12.0.4",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -34,6 +38,11 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.4.0",
+    "@graphql-codegen/near-operation-file-preset": "^2.2.3",
+    "@graphql-codegen/typescript-operations": "^2.2.2",
+    "@graphql-codegen/typescript-react-query": "^3.3.1",
+    "@graphql-codegen/typescript-resolvers": "^2.4.3",
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/react-hooks": "^7.0.2",

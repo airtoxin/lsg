@@ -3,6 +3,15 @@ import { InteractiveBlock } from "../components/InteractiveBlock";
 import { trpc } from "../utils/trpc";
 import Link from "next/link";
 import { pagesPath } from "../utils/$path";
+import gql from "graphql-tag";
+
+gql`
+  query HomePage {
+    me {
+      email
+    }
+  }
+`;
 
 export const HomePage: NextPage = () => {
   const { isLoading, error, data } = trpc.useQuery(["page.Home"]);
