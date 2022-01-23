@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@graphql-yoga/node": "^0.1.0-canary-c76d3fc.0",
+    "@prisma/client": "^3.8.1",
     "@trpc/client": "^9.15.0",
     "@trpc/next": "^9.15.0",
     "@trpc/react": "^9.15.0",
@@ -26,6 +27,7 @@
     "firebase-admin": "^10.0.0",
     "graphql": "^16.2.0",
     "next": "12.0.4",
+    "prisma": "^3.8.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-query": "^3.33.6",

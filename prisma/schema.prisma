@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Puzzle {
+  id          String       @id @default(uuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  description String       @db.VarChar(255)
+  rules       PuzzleRule[]
+  tests       PuzzleTest[]
+}
+
+model PuzzleRule {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  puzzleId  String
+  puzzle    Puzzle   @relation(fields: [puzzleId], references: [id])
+}
+
+model PuzzleTest {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  puzzleId  String
+  puzzle    Puzzle   @relation(fields: [puzzleId], references: [id])
+}
