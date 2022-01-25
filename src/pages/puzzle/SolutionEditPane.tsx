@@ -12,9 +12,9 @@ import {
   useRunTest,
   useSetPuzzleByKv,
 } from "./hooks";
-import { PuzzleRule } from "../../core/puzzles";
 import { swap } from "../../utils/array";
 import { trpc } from "../../utils/trpc";
+import { PuzzleRule } from "../../types.gen";
 
 export const SolutionEditPane: VoidFunctionComponent = () => {
   const puzzle = useRecoilValue(PuzzleState);

@@ -6,16 +6,7 @@ import {
 } from "react";
 import { useTestSuccess } from "./hooks";
 import { Input } from "../../components/Input";
-import gql from "graphql-tag";
 import { TestResultFragment } from "./TestResult.gen";
-
-gql`
-  fragment TestResult on PuzzleTest {
-    step
-    isAny
-    expect
-  }
-`;
 
 export type Props = {
   test: TestResultFragment;

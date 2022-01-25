@@ -1,15 +1,9 @@
-import { createServer } from "@graphql-yoga/node";
 import { typeDefs } from "../../schema";
 import { resolvers } from "../../server/resolvers";
+import { ApolloServer } from "apollo-server-express";
+import { Request, Response } from "express";
 
-const server = createServer({
-  cors: false,
-  endpoint: "/api/graphql",
-  schema: {
-    typeDefs,
-    resolvers,
-  },
-});
+const apolloServer = new ApolloServer({ typeDefs, resolvers });
 
 export const config = {
   api: {
@@ -18,4 +12,24 @@ export const config = {
   },
 };
 
-export default server.requestListener;
+const getApolloMiddleware = async () => {
+  await apolloServer.start();
+  return apolloServer.getMiddleware({
+    path: "/api/graphql",
+  });
+};
+
+const handler = async (req: Request, res: Response) => {
+  const apolloMiddleware = await getApolloMiddleware();
+  await new Promise((resolve, reject) => {
+    apolloMiddleware(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+
+      return resolve(result);
+    });
+  });
+};
+
+export default handler;

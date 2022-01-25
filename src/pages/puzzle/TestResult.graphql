@@ -1,0 +1,5 @@
+fragment TestResult on PuzzleTest {
+  step
+  isAny
+  expect
+}

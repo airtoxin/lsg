@@ -1,17 +1,6 @@
 import { VoidFunctionComponent } from "react";
 import { TestResult } from "./TestResult";
-import gql from "graphql-tag";
 import { PuzzlePaneFragment } from "./PuzzlePane.gen";
-
-gql`
-  fragment PuzzlePane on Puzzle {
-    description
-    input
-    tests {
-      ...TestResult
-    }
-  }
-`;
 
 export const PuzzlePane: VoidFunctionComponent<{
   puzzle: PuzzlePaneFragment;

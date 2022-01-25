@@ -1,20 +1,17 @@
 schema: src/schema.ts
+documents: 'src/**/*.graphql'
 generates:
   src/types.gen.ts:
     plugins:
       - typescript
   src/pages/:
-    documents: 'src/**/!(*.gen).{ts,tsx}'
     preset: near-operation-file
     presetConfig:
       extension: .gen.ts
       baseTypesPath: ../types.gen.ts
     plugins:
       - typescript-operations
-      - typescript-react-query
-    config:
-      fetcher:
-        endpoint: 'http://localhost:3000/api/graphql'
+      - typescript-react-apollo
   src/server/resolvers/resolver-types.gen.ts:
     plugins:
       - typescript

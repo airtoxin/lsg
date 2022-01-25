@@ -2,23 +2,11 @@ import { NextPage } from "next";
 import { InteractiveBlock } from "../components/InteractiveBlock";
 import Link from "next/link";
 import { pagesPath } from "../utils/$path";
-import gql from "graphql-tag";
 import { useHomePageQuery } from "./HomePage.gen";
 
-gql`
-  query HomePage {
-    puzzles {
-      id
-    }
-    newPuzzles {
-      id
-    }
-  }
-`;
-
 export const HomePage: NextPage = () => {
-  const { isLoading, error, data } = useHomePageQuery();
-  if (isLoading) return <div>Loading...</div>;
+  const { loading, error, data } = useHomePageQuery();
+  if (loading) return <div>Loading...</div>;
   if (error)
     return (
       <div>

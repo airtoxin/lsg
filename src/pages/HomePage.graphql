@@ -1,0 +1,8 @@
+query HomePage {
+  puzzles {
+    id
+  }
+  newPuzzles {
+    id
+  }
+}
