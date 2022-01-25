@@ -4,7 +4,7 @@ export const typeDefs = gql`
   scalar Date
 
   type Puzzle {
-    id: String!
+    id: ID!
     description: String!
     input: String!
     createdAt: Date!
@@ -26,6 +26,7 @@ export const typeDefs = gql`
   }
 
   type Query {
+    puzzle(id: ID!): Puzzle!
     puzzles: [Puzzle!]!
     newPuzzles: [Puzzle!]!
   }

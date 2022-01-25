@@ -1,13 +1,14 @@
-import { QueryResolvers } from "./types.gen";
+import { QueryResolvers } from "./resolver-types.gen";
 import { puzzles } from "../../core/puzzles";
 
 export const Query: QueryResolvers = {
-  puzzles: (parent, args, context) => {
-    console.log("@parent,args,context", parent, args, context);
+  puzzle: (parent, args) => {
+    throw new Error(`Puzzle not found, id:${args.id}`);
+  },
+  puzzles: () => {
     return puzzles;
   },
-  newPuzzles: (parent, args, context) => {
-    console.log("@parent,args,context", parent, args, context);
+  newPuzzles: () => {
     return [];
   },
 };

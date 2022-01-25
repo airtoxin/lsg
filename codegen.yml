@@ -15,7 +15,7 @@ generates:
     config:
       fetcher:
         endpoint: 'http://localhost:3000/api/graphql'
-  src/server/resolvers/types.gen.ts:
+  src/server/resolvers/resolver-types.gen.ts:
     plugins:
       - typescript
       - typescript-resolvers

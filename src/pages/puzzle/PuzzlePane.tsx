@@ -1,12 +1,21 @@
 import { VoidFunctionComponent } from "react";
-import { useRecoilValue } from "recoil";
-import { PuzzleState } from "../../states";
 import { TestResult } from "./TestResult";
+import gql from "graphql-tag";
+import { PuzzlePaneFragment } from "./PuzzlePane.gen";
 
-export const PuzzlePane: VoidFunctionComponent = () => {
-  const puzzle = useRecoilValue(PuzzleState);
-  if (puzzle == null) return null;
+gql`
+  fragment PuzzlePane on Puzzle {
+    description
+    input
+    tests {
+      ...TestResult
+    }
+  }
+`;
 
+export const PuzzlePane: VoidFunctionComponent<{
+  puzzle: PuzzlePaneFragment;
+}> = ({ puzzle }) => {
   return (
     <>
       <div className="pb-4">

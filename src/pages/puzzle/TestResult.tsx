@@ -1,10 +1,24 @@
-import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
-import { Test } from "../../core/puzzles";
+import {
+  ChangeEvent,
+  useCallback,
+  useState,
+  VoidFunctionComponent,
+} from "react";
 import { useTestSuccess } from "./hooks";
 import { Input } from "../../components/Input";
+import gql from "graphql-tag";
+import { TestResultFragment } from "./TestResult.gen";
+
+gql`
+  fragment TestResult on PuzzleTest {
+    step
+    isAny
+    expect
+  }
+`;
 
 export type Props = {
-  test: Test;
+  test: TestResultFragment;
   onChangeExpect?: (expect: string) => unknown;
 };
 export const TestResult: VoidFunctionComponent<Props> = ({
@@ -17,12 +31,13 @@ export const TestResult: VoidFunctionComponent<Props> = ({
       onChangeExpect?.(event.target.value),
     [onChangeExpect]
   );
+  const [resultAnimationText] = useState("");
 
   return test.isAny ? (
     <div data-testid="TestResult-Any" className="text-gray-500">
       <div>Step&nbsp;{test.step}</div>
       <div>Any</div>
-      <div>Result:&nbsp;{test.resultAnimationText}</div>
+      <div>Result:&nbsp;{resultAnimationText}</div>
     </div>
   ) : (
     <div data-testid="TestResult">
@@ -44,7 +59,7 @@ export const TestResult: VoidFunctionComponent<Props> = ({
             : "text-red-300"
         }
       >
-        Result:&nbsp;{test.resultAnimationText ?? ""}
+        Result:&nbsp;{resultAnimationText ?? ""}
       </div>
     </div>
   );
