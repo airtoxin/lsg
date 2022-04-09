@@ -1,7 +1,13 @@
-import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  VoidFunctionComponent,
+} from "react";
 import { Input } from "../../components/Input";
 import { PuzzleTest, PuzzleTestResult } from "../../states2";
 import { PuzzleTestStatus } from "./hooks2";
+import useSound from "use-sound";
 
 export const PuzzleTestAndResult: VoidFunctionComponent<{
   puzzleTest: PuzzleTest;
@@ -14,6 +20,13 @@ export const PuzzleTestAndResult: VoidFunctionComponent<{
       onChangeExpect?.(event.target.value),
     [onChangeExpect]
   );
+
+  const [playOk] = useSound("/assets/ok.wav", { interrupt: true });
+  const [playNg] = useSound("/assets/ng.wav", { interrupt: true });
+  useEffect(() => {
+    if (puzzleTestStatus === "succeeded") playOk();
+    if (puzzleTestStatus === "failed") playNg();
+  }, [playNg, playOk, puzzleTestStatus]);
 
   return puzzleTest.isAny ? (
     <div data-testid="TestResult-Any" className="text-gray-500">
