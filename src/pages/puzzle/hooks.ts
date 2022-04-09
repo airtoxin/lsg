@@ -23,15 +23,6 @@ export const usePuzzleTestable = () => {
   );
 };
 
-export const usePuzzleSuccessEffect = () => {
-  const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
-  const [play] = useSound("/assets/success.wav", { interrupt: true });
-  useEffect(() => {
-    if (puzzleSuccess) setTimeout(play, 100);
-  }, [play, puzzleSuccess]);
-  return puzzleSuccess;
-};
-
 export const usePuzzlePublishable = () => {
   const puzzleSuccess = useRecoilValue(PuzzleSuccessState);
   const puzzleTestable = usePuzzleTestable();

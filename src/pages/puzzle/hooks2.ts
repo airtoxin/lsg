@@ -8,21 +8,23 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useCallback } from "react";
 import { lSystem } from "../../core/LSystem";
 import { useInterval } from "../../hooks/useInterval";
+import { zip } from "../../utils/array";
 
 export type PuzzleTestStatus = "untested" | "testing" | "succeeded" | "failed";
 export const usePuzzleTestStatuses = (): PuzzleTestStatus[] => {
+  const puzzleTests = useRecoilValue(PuzzleTestsState);
   const puzzleTestResults = useRecoilValue(PuzzleTestResultsState);
-  return puzzleTestResults.map((puzzleTestResult) => {
-    if (puzzleTestResult == null) return "untested";
-    if (
-      puzzleTestResult.resultForAnimation.length !==
-      puzzleTestResult.result.length
-    )
-      return "testing";
-    return puzzleTestResult.result === puzzleTestResult.resultForAnimation
-      ? "succeeded"
-      : "failed";
-  });
+  return zip(puzzleTests, puzzleTestResults).map(
+    ([{ expect }, puzzleTestResult]) => {
+      if (puzzleTestResult == null) return "untested";
+      if (
+        puzzleTestResult.resultForAnimation.length !==
+        puzzleTestResult.result.length
+      )
+        return "testing";
+      return puzzleTestResult.result === expect ? "succeeded" : "failed";
+    }
+  );
 };
 
 export const useRunPuzzleTest = () => {

@@ -1,13 +1,17 @@
-import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useMemo,
+  VoidFunctionComponent,
+} from "react";
 import { pagesPath } from "../../utils/$path";
 import { format } from "url";
 import { useRouter } from "next/router";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-import { usePuzzleSuccessEffect } from "./hooks";
 import { useRecoilState } from "recoil";
 import { PuzzleRulesState } from "../../states2";
-import { useRunPuzzleTest } from "./hooks2";
+import { usePuzzleTestStatuses, useRunPuzzleTest } from "./hooks2";
 
 export const PuzzleRulesSection: VoidFunctionComponent = () => {
   const [puzzleRules, setPuzzleRules] = useRecoilState(PuzzleRulesState);
@@ -24,7 +28,11 @@ export const PuzzleRulesSection: VoidFunctionComponent = () => {
     [setPuzzleRules]
   );
 
-  const puzzleSuccess = usePuzzleSuccessEffect();
+  const puzzleTestStatuses = usePuzzleTestStatuses();
+  const puzzleSuccess = useMemo(
+    () => puzzleTestStatuses.every((status) => status === "succeeded"),
+    [puzzleTestStatuses]
+  );
   const runPuzzleTest = useRunPuzzleTest();
 
   const router = useRouter();
