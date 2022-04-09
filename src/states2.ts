@@ -21,7 +21,7 @@ export const PuzzleTestsState = atom<PuzzleTest[]>({
 
 export type PuzzleTestResult = {
   result: string;
-  resultForAnimation: string;
+  resultForAnimation?: string;
 } | null;
 export const PuzzleTestResultsState = atom<PuzzleTestResult[]>({
   key: "PuzzleTestResultsState",

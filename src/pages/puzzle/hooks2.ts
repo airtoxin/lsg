@@ -18,7 +18,7 @@ export const usePuzzleTestStatuses = (): PuzzleTestStatus[] => {
     ([{ expect }, puzzleTestResult]) => {
       if (puzzleTestResult == null) return "untested";
       if (
-        puzzleTestResult.resultForAnimation.length !==
+        puzzleTestResult.resultForAnimation?.length !==
         puzzleTestResult.result.length
       )
         return "testing";
@@ -43,7 +43,7 @@ export const useRunPuzzleTest = () => {
             result: puzzleTestResult.result,
             resultForAnimation: puzzleTestResult.result.slice(
               0,
-              puzzleTestResult.resultForAnimation.length + 1
+              (puzzleTestResult.resultForAnimation?.length ?? 0) + 1
             ),
           };
         });
@@ -63,7 +63,6 @@ export const useRunPuzzleTest = () => {
         );
         return {
           result,
-          resultForAnimation: result.slice(0, 1),
         };
       })
     );
