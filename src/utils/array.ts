@@ -15,3 +15,18 @@ export const objectToArray = <T>(obj: Record<string, T>): T[] => {
   entries.sort(([a], [b]) => (a === b ? 0 : a > b ? 1 : -1));
   return entries.map(([_, v]) => v);
 };
+
+export const zip = <A, B>(as: readonly A[], bs: readonly B[]): [A, B][] => {
+  if (as.length !== bs.length) throw new Error(`Expect same length`);
+  return as.map((a, i) => [a, bs[i]!]);
+};
+
+export const zip3 = <A, B, C>(
+  as: readonly A[],
+  bs: readonly B[],
+  cs: readonly C[]
+): [A, B, C][] => {
+  if (as.length !== bs.length || bs.length !== cs.length)
+    throw new Error(`Expect same length`);
+  return as.map((a, i) => [a, bs[i]!, cs[i]!]);
+};

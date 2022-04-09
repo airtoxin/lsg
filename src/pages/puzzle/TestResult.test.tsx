@@ -4,7 +4,7 @@
 import "@testing-library/jest-dom";
 import React from "react";
 import { render } from "@testing-library/react";
-import { TestResult } from "./TestResult";
+import { PuzzleTestAndResult } from "./PuzzleTestAndResult";
 import { Test } from "../../core/puzzles";
 
 describe("TestResult", () => {
@@ -20,7 +20,7 @@ describe("TestResult", () => {
   it("isAny:false のとき Step, Expect, Result が表示されること", () => {
     const { test } = createDefaultContext();
 
-    const { queryByTestId } = render(<TestResult test={test} />);
+    const { queryByTestId } = render(<PuzzleTestAndResult test={test} />);
 
     const element = queryByTestId("TestResult");
     expect(element).toHaveTextContent("Step 1");
@@ -32,7 +32,7 @@ describe("TestResult", () => {
     const { test } = createDefaultContext();
     test.isAny = true;
 
-    const { queryByTestId } = render(<TestResult test={test} />);
+    const { queryByTestId } = render(<PuzzleTestAndResult test={test} />);
 
     const element = queryByTestId("TestResult-Any");
     expect(element).toHaveTextContent("Step 1");
@@ -45,7 +45,7 @@ describe("TestResult", () => {
     const { test } = createDefaultContext();
     test.resultAnimationText = "ABCDE";
 
-    const { queryByTestId } = render(<TestResult test={test} />);
+    const { queryByTestId } = render(<PuzzleTestAndResult test={test} />);
     expect(queryByTestId("TestResult")).toHaveTextContent("Result: ABCDE");
   });
 });

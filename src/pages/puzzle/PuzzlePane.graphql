@@ -1,7 +1,0 @@
-fragment PuzzlePane on Puzzle {
-  description
-  input
-  tests {
-    ...TestResult
-  }
-}

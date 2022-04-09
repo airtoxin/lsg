@@ -1,5 +1,0 @@
-query PuzzlePage($id: ID!) {
-  puzzle(id: $id) {
-    ...PuzzlePane
-  }
-}

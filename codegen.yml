@@ -1,5 +1,7 @@
 schema: src/schema.ts
-documents: 'src/**/*.graphql'
+documents:
+  - 'src/**/*.graphql'
+  - 'src/**/*.tsx'
 generates:
   src/types.gen.ts:
     plugins:

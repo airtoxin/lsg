@@ -1,10 +1,12 @@
 import { QueryResolvers } from "./resolver-types.gen";
 import { puzzles } from "../../core/puzzles";
-import { GraphQLYogaError } from "@graphql-yoga/node";
 
 export const Query: QueryResolvers = {
   puzzle: (parent, args) => {
-    throw new GraphQLYogaError(`Puzzle not found, id:${args.id}`);
+    const puzzle = puzzles.find((p) => p.id === args.id);
+    console.log("@puzzle", puzzle);
+    if (puzzle) return puzzle;
+    throw new Error(`Puzzle not found`);
   },
   puzzles: () => {
     return puzzles;
