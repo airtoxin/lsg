@@ -11,7 +11,11 @@ import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { useRecoilState } from "recoil";
 import { PuzzleRulesState } from "../../states2";
-import { usePuzzleTestStatuses, useRunPuzzleTest } from "./hooks2";
+import {
+  usePuzzleTestStatuses,
+  useRunPuzzleTest,
+  useStopPuzzleTesting,
+} from "./hooks2";
 
 export const PuzzleRulesSection: VoidFunctionComponent = () => {
   const [puzzleRules, setPuzzleRules] = useRecoilState(PuzzleRulesState);
@@ -29,10 +33,15 @@ export const PuzzleRulesSection: VoidFunctionComponent = () => {
   );
 
   const puzzleTestStatuses = usePuzzleTestStatuses();
+  const puzzleTesting = useMemo(
+    () => puzzleTestStatuses.some((status) => status === "testing"),
+    [puzzleTestStatuses]
+  );
   const puzzleSuccess = useMemo(
     () => puzzleTestStatuses.every((status) => status === "succeeded"),
     [puzzleTestStatuses]
   );
+  const stopPuzzleTesting = useStopPuzzleTesting();
   const runPuzzleTest = useRunPuzzleTest();
 
   const router = useRouter();
@@ -59,11 +68,16 @@ export const PuzzleRulesSection: VoidFunctionComponent = () => {
       <hr className="pb-4" />
       <div className="flex flex-col pb-4">
         <Button
+          reverse={puzzleSuccess}
           onClick={() =>
-            puzzleSuccess ? handleReturnToMenu() : runPuzzleTest()
+            puzzleTesting
+              ? stopPuzzleTesting()
+              : puzzleSuccess
+              ? handleReturnToMenu()
+              : runPuzzleTest()
           }
         >
-          {puzzleSuccess ? "Back to menu" : "Run test"}
+          {puzzleTesting ? "Stop test" : puzzleSuccess ? "DONE" : "Run test"}
         </Button>
       </div>
     </>
