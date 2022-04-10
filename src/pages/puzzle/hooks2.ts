@@ -27,15 +27,6 @@ export const usePuzzleTestStatuses = (): PuzzleTestStatus[] => {
   );
 };
 
-export const useStopPuzzleTesting = () => {
-  const setPuzzleTestResults = useSetRecoilState(PuzzleTestResultsState);
-  return useCallback(() => {
-    setPuzzleTestResults((puzzleTestResults) =>
-      puzzleTestResults.map(() => null)
-    );
-  }, [setPuzzleTestResults]);
-};
-
 export const useRunPuzzleTest = () => {
   const puzzleProblem = useRecoilValue(PuzzleProblemState);
   const puzzleRules = useRecoilValue(PuzzleRulesState);
@@ -76,4 +67,13 @@ export const useRunPuzzleTest = () => {
       })
     );
   }, [puzzleProblem, puzzleRules, puzzleTests, setPuzzleTestResults]);
+};
+
+export const useStopPuzzleTesting = () => {
+  const setPuzzleTestResults = useSetRecoilState(PuzzleTestResultsState);
+  return useCallback(() => {
+    setPuzzleTestResults((puzzleTestResults) =>
+      puzzleTestResults.map(() => null)
+    );
+  }, [setPuzzleTestResults]);
 };

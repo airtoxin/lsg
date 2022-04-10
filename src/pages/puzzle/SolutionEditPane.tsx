@@ -1,24 +1,31 @@
-import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
-import { pagesPath } from "../../utils/$path";
-import { format } from "url";
-import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
-import { PuzzleState } from "../../states";
+import {
+  ChangeEvent,
+  useCallback,
+  useMemo,
+  VoidFunctionComponent,
+} from "react";
+import { useRecoilState } from "recoil";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-import {
-  usePuzzlePublishableEffect,
-  usePuzzleTestable,
-  useRunTest,
-  useSetPuzzleByKv,
-} from "./hooks";
 import { swap } from "../../utils/array";
-import { trpc } from "../../utils/trpc";
 import { PuzzleRule } from "../../types.gen";
+import {
+  PuzzleProblemState,
+  PuzzleRulesState,
+  PuzzleTestResultsState,
+  PuzzleTestsState,
+} from "../../states2";
+import { usePuzzleTestStatuses, useRunPuzzleTest } from "./hooks2";
 
 export const SolutionEditPane: VoidFunctionComponent = () => {
-  const puzzle = useRecoilValue(PuzzleState);
-  const setPuzzleByKv = useSetPuzzleByKv();
+  const [puzzleProblem, setPuzzleProblem] = useRecoilState(PuzzleProblemState);
+  const [puzzleRules, setPuzzleRules] = useRecoilState(PuzzleRulesState);
+  const [puzzleTests, setPuzzleTests] = useRecoilState(PuzzleTestsState);
+  const puzzleTestStatuses = usePuzzleTestStatuses();
+  const [puzzleTestResults, setPuzzleTestResults] = useRecoilState(
+    PuzzleTestResultsState
+  );
+
   const setRule = useCallback(
     <K extends keyof PuzzleRule, T>(
         key: K,
@@ -26,17 +33,17 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
       ) =>
       (index: number) =>
       (event: T) =>
-        setPuzzleByKv("rules", (rules) =>
-          rules.map((rule, i) =>
+        setPuzzleRules((puzzleRules) =>
+          puzzleRules.map((puzzleRule, i) =>
             i !== index
-              ? rule
+              ? puzzleRule
               : {
-                  ...rule,
-                  [key]: valueProcessor(event, rule),
+                  ...puzzleRule,
+                  [key]: valueProcessor(event, puzzleRule),
                 }
           )
         ),
-    [setPuzzleByKv]
+    [setPuzzleRules]
   );
   const handleChangeFrom = setRule(
     "from",
@@ -48,61 +55,77 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
   );
   const handleClickFixed = setRule("fixed", (_, rule) => !rule.fixed);
 
-  const puzzlePublishable = usePuzzlePublishableEffect();
+  const puzzleTestable = useMemo(
+    () =>
+      puzzleProblem &&
+      puzzleProblem.input.length > 0 &&
+      puzzleTests.length > 0 &&
+      puzzleRules.length > 0 &&
+      puzzleRules.every((puzzleRule) => puzzleRule.from.length > 0),
+    [puzzleProblem, puzzleRules, puzzleTests.length]
+  );
+  const puzzlePublishable = useMemo(
+    () =>
+      puzzleTestable &&
+      puzzleTestStatuses.every(
+        (puzzleTestStatus) => puzzleTestStatus === "succeeded"
+      ),
+    [puzzleTestStatuses, puzzleTestable]
+  );
 
-  const puzzleTestable = usePuzzleTestable();
+  const runPuzzleTest = useRunPuzzleTest();
 
-  const runTest = useRunTest();
-
-  const addPuzzleMutation = trpc.useMutation(["page.AddPuzzle"]);
-  const router = useRouter();
   const handlePublish = useCallback(() => {
-    if (puzzle != null) {
-      addPuzzleMutation.mutateAsync(puzzle).then((p) => {
-        router.push(format(pagesPath.puzzle._id(p.id).$url()));
-      });
+    if (puzzleProblem != null) {
+      console.log("@puzzleProblem", puzzleProblem);
+      console.log("@puzzleTests", puzzleTests);
+      console.log("@puzzleRules", puzzleRules);
     }
-  }, [addPuzzleMutation, puzzle, router]);
+  }, [puzzleProblem, puzzleRules, puzzleTests]);
 
   const handleClickAddRule = useCallback(
     () =>
-      setPuzzleByKv("rules", (rules) =>
-        [...rules].concat([{ from: "", to: "", fixed: false }])
+      setPuzzleRules((puzzleRules) =>
+        puzzleRules.concat([{ from: "", to: "", fixed: false }])
       ),
-    [setPuzzleByKv]
+    [setPuzzleRules]
   );
   const handleClickDeleteRule = useCallback(
     (index: number) => () =>
-      setPuzzleByKv("rules", (rules) => rules.filter((rule, i) => i !== index)),
-    [setPuzzleByKv]
+      setPuzzleRules((puzzleRules) =>
+        puzzleRules.filter((_, i) => i !== index)
+      ),
+    [setPuzzleRules]
   );
   const handleClickReorder = useCallback(
     (index: number) => () =>
-      setPuzzleByKv("rules", (rules) =>
-        index < 0 || rules.length - 2 < index ? rules : swap(rules, index)
+      setPuzzleRules((puzzleRules) =>
+        index < 0 || puzzleRules.length - 2 < index
+          ? puzzleRules
+          : swap(puzzleRules, index)
       ),
-    [setPuzzleByKv]
+    [setPuzzleRules]
   );
 
   return (
     <>
-      {puzzle?.rules.map((rule, i) => (
+      {puzzleRules.map((puzzleRule, i) => (
         <div key={i} className="pb-4 flex items-center">
           <div className="text-center">
             <Input
               className="w-12 text-center"
-              value={rule.from}
+              value={puzzleRule.from}
               onChange={handleChangeFrom(i)}
             />
           </div>
           <div className="ml-4 mr-4">=&gt;</div>
           <Input
-            noBorder={rule.fixed ?? undefined}
+            noBorder={puzzleRule.fixed ?? undefined}
             type="text"
-            value={rule.to}
+            value={puzzleRule.to}
             onChange={handleChangeTo(i)}
-            disabled={rule.fixed ?? undefined}
-            style={rule.fixed ? { pointerEvents: "none" } : {}}
+            disabled={puzzleRule.fixed ?? undefined}
+            style={puzzleRule.fixed ? { pointerEvents: "none" } : {}}
           />
           <Button
             noBorder
@@ -141,9 +164,18 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
       <div className="flex flex-col pb-4">
         <Button
           disabled={!puzzleTestable}
-          onClick={() => (puzzlePublishable ? handlePublish() : runTest())}
+          onClick={() => puzzleTestable && runPuzzleTest()}
         >
-          {puzzlePublishable ? "Publish puzzle" : "Run test"}
+          Run test
+        </Button>
+      </div>
+      <div className="flex flex-col pb-4">
+        <Button
+          reverse
+          disabled={!puzzlePublishable}
+          onClick={() => puzzlePublishable && handlePublish()}
+        >
+          Publish puzzle
         </Button>
       </div>
     </>

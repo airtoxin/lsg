@@ -68,16 +68,20 @@ export const PuzzleRulesSection: VoidFunctionComponent = () => {
       <hr className="pb-4" />
       <div className="flex flex-col pb-4">
         <Button
-          reverse={puzzleSuccess}
           onClick={() =>
-            puzzleTesting
-              ? stopPuzzleTesting()
-              : puzzleSuccess
-              ? handleReturnToMenu()
-              : runPuzzleTest()
+            puzzleTesting ? stopPuzzleTesting() : runPuzzleTest()
           }
         >
-          {puzzleTesting ? "Stop test" : puzzleSuccess ? "DONE" : "Run test"}
+          {puzzleTesting ? "Stop test" : "Run test"}
+        </Button>
+      </div>
+      <div className="flex flex-col pb-4">
+        <Button
+          reverse
+          disabled={!puzzleSuccess}
+          onClick={() => puzzleSuccess && handleReturnToMenu()}
+        >
+          DONE
         </Button>
       </div>
     </>

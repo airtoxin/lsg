@@ -1,22 +1,29 @@
 import { useEffect, VoidFunctionComponent } from "react";
 import { PuzzlePageLayout } from "./PuzzlePageLayout";
 import { useSetRecoilState } from "recoil";
-import { PuzzleState } from "../../states";
-import shortUuid from "short-uuid";
 import { PuzzleEditPane } from "./PuzzleEditPane";
 import { SolutionEditPane } from "./SolutionEditPane";
+import {
+  PuzzleProblemState,
+  PuzzleRulesState,
+  PuzzleTestResultsState,
+  PuzzleTestsState,
+} from "../../states2";
 
 export const EditPuzzlePage: VoidFunctionComponent = () => {
-  const setPuzzle = useSetRecoilState(PuzzleState);
+  const setPuzzleProblem = useSetRecoilState(PuzzleProblemState);
+  const setPuzzleRules = useSetRecoilState(PuzzleRulesState);
+  const setPuzzleTests = useSetRecoilState(PuzzleTestsState);
+  const PuzzleTestResults = useSetRecoilState(PuzzleTestResultsState);
   useEffect(() => {
-    setPuzzle({
-      id: shortUuid.generate(),
+    setPuzzleProblem({
       description: "",
       input: "",
-      rules: [],
-      tests: [],
     });
-  }, [setPuzzle]);
+    setPuzzleRules([]);
+    setPuzzleTests([]);
+    PuzzleTestResults([]);
+  }, [PuzzleTestResults, setPuzzleProblem, setPuzzleRules, setPuzzleTests]);
 
   return (
     <PuzzlePageLayout>
