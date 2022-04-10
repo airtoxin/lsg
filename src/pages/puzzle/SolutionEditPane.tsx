@@ -32,7 +32,7 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
         valueProcessor: (event: T, rule: PuzzleRule) => PuzzleRule[K]
       ) =>
       (index: number) =>
-      (event: T) =>
+      (event: T) => {
         setPuzzleRules((puzzleRules) =>
           puzzleRules.map((puzzleRule, i) =>
             i !== index
@@ -42,8 +42,12 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
                   [key]: valueProcessor(event, puzzleRule),
                 }
           )
-        ),
-    [setPuzzleRules]
+        );
+        setPuzzleTestResults((puzzleTestResults) =>
+          puzzleTestResults.map(() => null)
+        );
+      },
+    [setPuzzleRules, setPuzzleTestResults]
   );
   const handleChangeFrom = setRule(
     "from",
@@ -83,28 +87,37 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
     }
   }, [puzzleProblem, puzzleRules, puzzleTests]);
 
-  const handleClickAddRule = useCallback(
-    () =>
-      setPuzzleRules((puzzleRules) =>
-        puzzleRules.concat([{ from: "", to: "", fixed: false }])
-      ),
-    [setPuzzleRules]
-  );
+  const handleClickAddRule = useCallback(() => {
+    setPuzzleRules((puzzleRules) =>
+      puzzleRules.concat([{ from: "", to: "", fixed: false }])
+    );
+    setPuzzleTestResults((puzzleTestResults) =>
+      puzzleTestResults.map(() => null)
+    );
+  }, [setPuzzleRules, setPuzzleTestResults]);
   const handleClickDeleteRule = useCallback(
-    (index: number) => () =>
+    (index: number) => () => {
       setPuzzleRules((puzzleRules) =>
         puzzleRules.filter((_, i) => i !== index)
-      ),
-    [setPuzzleRules]
+      );
+      setPuzzleTestResults((puzzleTestResults) =>
+        puzzleTestResults.map(() => null)
+      );
+    },
+    [setPuzzleRules, setPuzzleTestResults]
   );
   const handleClickReorder = useCallback(
-    (index: number) => () =>
+    (index: number) => () => {
       setPuzzleRules((puzzleRules) =>
         index < 0 || puzzleRules.length - 2 < index
           ? puzzleRules
           : swap(puzzleRules, index)
-      ),
-    [setPuzzleRules]
+      );
+      setPuzzleTestResults((puzzleTestResults) =>
+        puzzleTestResults.map(() => null)
+      );
+    },
+    [setPuzzleRules, setPuzzleTestResults]
   );
 
   return (
