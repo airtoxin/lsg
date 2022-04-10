@@ -1,9 +1,9 @@
 import { useEffect, VoidFunctionComponent } from "react";
 import { PuzzleTestAndResult } from "./PuzzleTestAndResult";
 import { useRecoilValue } from "recoil";
-import { PuzzleTestResultsState, PuzzleTestsState } from "../../states2";
+import { PuzzleTestResultsState, PuzzleTestsState } from "../../states";
 import { zip3 } from "../../utils/array";
-import { usePuzzleTestStatuses } from "./hooks2";
+import { usePuzzleTestStatuses } from "./hooks";
 import useSound from "use-sound";
 
 export const PuzzleTestsSection: VoidFunctionComponent = () => {

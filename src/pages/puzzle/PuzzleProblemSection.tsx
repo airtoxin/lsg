@@ -1,6 +1,6 @@
 import { VoidFunctionComponent } from "react";
 import { useRecoilValue } from "recoil";
-import { PuzzleProblemState } from "../../states2";
+import { PuzzleProblemState } from "../../states";
 import { PuzzleTestsSection } from "./PuzzleTestsSection";
 
 export const PuzzleProblemSection: VoidFunctionComponent = () => {

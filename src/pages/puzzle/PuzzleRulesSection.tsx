@@ -10,12 +10,12 @@ import { useRouter } from "next/router";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { useRecoilState } from "recoil";
-import { PuzzleRulesState } from "../../states2";
+import { PuzzleRulesState } from "../../states";
 import {
   usePuzzleTestStatuses,
   useRunPuzzleTest,
   useStopPuzzleTesting,
-} from "./hooks2";
+} from "./hooks";
 
 export const PuzzleRulesSection: VoidFunctionComponent = () => {
   const [puzzleRules, setPuzzleRules] = useRecoilState(PuzzleRulesState);

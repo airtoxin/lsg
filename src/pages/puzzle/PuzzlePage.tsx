@@ -12,7 +12,7 @@ import {
   PuzzleRulesState,
   PuzzleTestResultsState,
   PuzzleTestsState,
-} from "../../states2";
+} from "../../states";
 import { useSetRecoilState } from "recoil";
 
 gql`

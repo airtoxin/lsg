@@ -5,8 +5,8 @@ import {
   VoidFunctionComponent,
 } from "react";
 import { Input } from "../../components/Input";
-import { PuzzleTest, PuzzleTestResult } from "../../states2";
-import { PuzzleTestStatus } from "./hooks2";
+import { PuzzleTest, PuzzleTestResult } from "../../states";
+import { PuzzleTestStatus } from "./hooks";
 import useSound from "use-sound";
 
 export const PuzzleTestAndResult: VoidFunctionComponent<{

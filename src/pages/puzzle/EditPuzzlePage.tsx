@@ -8,7 +8,7 @@ import {
   PuzzleRulesState,
   PuzzleTestResultsState,
   PuzzleTestsState,
-} from "../../states2";
+} from "../../states";
 
 export const EditPuzzlePage: VoidFunctionComponent = () => {
   const setPuzzleProblem = useSetRecoilState(PuzzleProblemState);

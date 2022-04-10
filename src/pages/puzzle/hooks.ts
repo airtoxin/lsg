@@ -3,7 +3,7 @@ import {
   PuzzleRulesState,
   PuzzleTestResultsState,
   PuzzleTestsState,
-} from "../../states2";
+} from "../../states";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useCallback } from "react";
 import { lSystem } from "../../core/LSystem";

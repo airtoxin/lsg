@@ -14,8 +14,8 @@ import {
   PuzzleRulesState,
   PuzzleTestResultsState,
   PuzzleTestsState,
-} from "../../states2";
-import { usePuzzleTestStatuses, useRunPuzzleTest } from "./hooks2";
+} from "../../states";
+import { usePuzzleTestStatuses, useRunPuzzleTest } from "./hooks";
 
 export const SolutionEditPane: VoidFunctionComponent = () => {
   const [puzzleProblem, setPuzzleProblem] = useRecoilState(PuzzleProblemState);
