@@ -30,4 +30,25 @@ export const typeDefs = gql`
     puzzles: [Puzzle!]!
     newPuzzles: [Puzzle!]!
   }
+
+  input AddPuzzle {
+    description: String!
+    input: String!
+    rules: [AddPuzzleRule!]!
+    tests: [AddPuzzleTest!]!
+  }
+  input AddPuzzleRule {
+    from: String!
+    to: String!
+    fixed: Boolean!
+  }
+  input AddPuzzleTest {
+    isAny: Boolean!
+    step: Int!
+    expect: String!
+  }
+
+  type Mutation {
+    addNewPuzzle(puzzle: AddPuzzle!): Puzzle!
+  }
 `;

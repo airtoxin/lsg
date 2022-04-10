@@ -16,6 +16,18 @@ import {
   PuzzleTestsState,
 } from "../../states";
 import { usePuzzleTestStatuses, useRunPuzzleTest } from "./hooks";
+import { gql } from "@apollo/client";
+import { useSolutionEditPaneMutation } from "./SolutionEditPane.gen";
+import { pagesPath } from "../../utils/$path";
+import { useRouter } from "next/router";
+
+gql`
+  mutation SolutionEditPane($puzzle: AddPuzzle!) {
+    addNewPuzzle(puzzle: $puzzle) {
+      id
+    }
+  }
+`;
 
 export const SolutionEditPane: VoidFunctionComponent = () => {
   const [puzzleProblem, setPuzzleProblem] = useRecoilState(PuzzleProblemState);
@@ -79,13 +91,31 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
 
   const runPuzzleTest = useRunPuzzleTest();
 
+  const router = useRouter();
+  const [publishPuzzle] = useSolutionEditPaneMutation();
   const handlePublish = useCallback(() => {
     if (puzzleProblem != null) {
-      console.log("@puzzleProblem", puzzleProblem);
-      console.log("@puzzleTests", puzzleTests);
-      console.log("@puzzleRules", puzzleRules);
+      publishPuzzle({
+        variables: {
+          puzzle: {
+            description: puzzleProblem.description,
+            input: puzzleProblem.input,
+            rules: puzzleRules,
+            tests: puzzleTests,
+          },
+        },
+      })
+        .then((value) => {
+          console.log("@value", value);
+          if (value.data?.addNewPuzzle.id != null) {
+            router.push(
+              pagesPath.puzzle._id(value.data?.addNewPuzzle.id).$url()
+            );
+          }
+        })
+        .catch(console.error);
     }
-  }, [puzzleProblem, puzzleRules, puzzleTests]);
+  }, [publishPuzzle, puzzleProblem, puzzleRules, puzzleTests, router]);
 
   const handleClickAddRule = useCallback(() => {
     setPuzzleRules((puzzleRules) =>
