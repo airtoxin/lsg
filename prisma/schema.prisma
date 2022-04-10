@@ -33,7 +33,7 @@ model PuzzleRule {
 
 model PuzzleTest {
   id       Int     @id @default(autoincrement())
-  any      Boolean
+  isAny    Boolean
   step     Int
   expect   String
   puzzleId String

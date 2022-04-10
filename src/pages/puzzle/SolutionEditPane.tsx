@@ -23,9 +23,7 @@ import { useRouter } from "next/router";
 
 gql`
   mutation SolutionEditPane($puzzle: AddPuzzle!) {
-    addNewPuzzle(puzzle: $puzzle) {
-      id
-    }
+    addNewPuzzle(puzzle: $puzzle)
   }
 `;
 
@@ -106,11 +104,8 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
         },
       })
         .then((value) => {
-          console.log("@value", value);
-          if (value.data?.addNewPuzzle.id != null) {
-            router.push(
-              pagesPath.puzzle._id(value.data?.addNewPuzzle.id).$url()
-            );
+          if (value.data?.addNewPuzzle) {
+            router.push(pagesPath.puzzle._id(value.data.addNewPuzzle).$url());
           }
         })
         .catch(console.error);

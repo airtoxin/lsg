@@ -49,6 +49,6 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    addNewPuzzle(puzzle: AddPuzzle!): Puzzle!
+    addNewPuzzle(puzzle: AddPuzzle!): ID!
   }
 `;
