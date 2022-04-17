@@ -1,42 +1,63 @@
-import { ChangeEvent, useCallback, VoidFunctionComponent } from "react";
-import { pagesPath } from "../../utils/$path";
-import { format } from "url";
-import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
-import { PuzzleState } from "../../states";
+import {
+  ChangeEvent,
+  useCallback,
+  useMemo,
+  VoidFunctionComponent,
+} from "react";
+import { useRecoilState } from "recoil";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-import {
-  usePuzzlePublishableEffect,
-  usePuzzleTestable,
-  useRunTest,
-  useSetPuzzleByKv,
-} from "./hooks";
-import { PuzzleRule } from "../../core/puzzles";
 import { swap } from "../../utils/array";
-import { trpc } from "../../utils/trpc";
+import { PuzzleRule } from "../../types.gen";
+import {
+  PuzzleProblemState,
+  PuzzleRulesState,
+  PuzzleTestResultsState,
+  PuzzleTestsState,
+} from "../../states";
+import { usePuzzleTestStatuses, useRunPuzzleTest } from "./hooks";
+import { gql } from "@apollo/client";
+import { useSolutionEditPaneMutation } from "./SolutionEditPane.gen";
+import { pagesPath } from "../../utils/$path";
+import { useRouter } from "next/router";
+
+gql`
+  mutation SolutionEditPane($puzzle: AddPuzzle!) {
+    addNewPuzzle(puzzle: $puzzle)
+  }
+`;
 
 export const SolutionEditPane: VoidFunctionComponent = () => {
-  const puzzle = useRecoilValue(PuzzleState);
-  const setPuzzleByKv = useSetPuzzleByKv();
+  const [puzzleProblem, setPuzzleProblem] = useRecoilState(PuzzleProblemState);
+  const [puzzleRules, setPuzzleRules] = useRecoilState(PuzzleRulesState);
+  const [puzzleTests, setPuzzleTests] = useRecoilState(PuzzleTestsState);
+  const puzzleTestStatuses = usePuzzleTestStatuses();
+  const [puzzleTestResults, setPuzzleTestResults] = useRecoilState(
+    PuzzleTestResultsState
+  );
+
   const setRule = useCallback(
     <K extends keyof PuzzleRule, T>(
         key: K,
         valueProcessor: (event: T, rule: PuzzleRule) => PuzzleRule[K]
       ) =>
       (index: number) =>
-      (event: T) =>
-        setPuzzleByKv("rules", (rules) =>
-          rules.map((rule, i) =>
+      (event: T) => {
+        setPuzzleRules((puzzleRules) =>
+          puzzleRules.map((puzzleRule, i) =>
             i !== index
-              ? rule
+              ? puzzleRule
               : {
-                  ...rule,
-                  [key]: valueProcessor(event, rule),
+                  ...puzzleRule,
+                  [key]: valueProcessor(event, puzzleRule),
                 }
           )
-        ),
-    [setPuzzleByKv]
+        );
+        setPuzzleTestResults((puzzleTestResults) =>
+          puzzleTestResults.map(() => null)
+        );
+      },
+    [setPuzzleRules, setPuzzleTestResults]
   );
   const handleChangeFrom = setRule(
     "from",
@@ -48,61 +69,101 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
   );
   const handleClickFixed = setRule("fixed", (_, rule) => !rule.fixed);
 
-  const puzzlePublishable = usePuzzlePublishableEffect();
-
-  const puzzleTestable = usePuzzleTestable();
-
-  const runTest = useRunTest();
-
-  const addPuzzleMutation = trpc.useMutation(["page.AddPuzzle"]);
-  const router = useRouter();
-  const handlePublish = useCallback(() => {
-    if (puzzle != null) {
-      addPuzzleMutation.mutateAsync(puzzle).then((p) => {
-        router.push(format(pagesPath.puzzle._id(p.id).$url()));
-      });
-    }
-  }, [addPuzzleMutation, puzzle, router]);
-
-  const handleClickAddRule = useCallback(
+  const puzzleTestable = useMemo(
     () =>
-      setPuzzleByKv("rules", (rules) =>
-        [...rules].concat([{ from: "", to: "", fixed: false }])
-      ),
-    [setPuzzleByKv]
+      puzzleProblem &&
+      puzzleProblem.input.length > 0 &&
+      puzzleTests.length > 0 &&
+      puzzleRules.length > 0 &&
+      puzzleRules.every((puzzleRule) => puzzleRule.from.length > 0),
+    [puzzleProblem, puzzleRules, puzzleTests.length]
   );
+  const puzzlePublishable = useMemo(
+    () =>
+      puzzleTestable &&
+      puzzleTestStatuses.every(
+        (puzzleTestStatus) => puzzleTestStatus === "succeeded"
+      ),
+    [puzzleTestStatuses, puzzleTestable]
+  );
+
+  const runPuzzleTest = useRunPuzzleTest();
+
+  const router = useRouter();
+  const [publishPuzzle] = useSolutionEditPaneMutation();
+  const handlePublish = useCallback(() => {
+    if (puzzleProblem != null) {
+      publishPuzzle({
+        variables: {
+          puzzle: {
+            description: puzzleProblem.description,
+            input: puzzleProblem.input,
+            rules: puzzleRules,
+            tests: puzzleTests,
+          },
+        },
+      })
+        .then((value) => {
+          if (value.data?.addNewPuzzle) {
+            router.push(pagesPath.puzzle._id(value.data.addNewPuzzle).$url());
+          }
+        })
+        .catch(console.error);
+    }
+  }, [publishPuzzle, puzzleProblem, puzzleRules, puzzleTests, router]);
+
+  const handleClickAddRule = useCallback(() => {
+    setPuzzleRules((puzzleRules) =>
+      puzzleRules.concat([{ from: "", to: "", fixed: false }])
+    );
+    setPuzzleTestResults((puzzleTestResults) =>
+      puzzleTestResults.map(() => null)
+    );
+  }, [setPuzzleRules, setPuzzleTestResults]);
   const handleClickDeleteRule = useCallback(
-    (index: number) => () =>
-      setPuzzleByKv("rules", (rules) => rules.filter((rule, i) => i !== index)),
-    [setPuzzleByKv]
+    (index: number) => () => {
+      setPuzzleRules((puzzleRules) =>
+        puzzleRules.filter((_, i) => i !== index)
+      );
+      setPuzzleTestResults((puzzleTestResults) =>
+        puzzleTestResults.map(() => null)
+      );
+    },
+    [setPuzzleRules, setPuzzleTestResults]
   );
   const handleClickReorder = useCallback(
-    (index: number) => () =>
-      setPuzzleByKv("rules", (rules) =>
-        index < 0 || rules.length - 2 < index ? rules : swap(rules, index)
-      ),
-    [setPuzzleByKv]
+    (index: number) => () => {
+      setPuzzleRules((puzzleRules) =>
+        index < 0 || puzzleRules.length - 2 < index
+          ? puzzleRules
+          : swap(puzzleRules, index)
+      );
+      setPuzzleTestResults((puzzleTestResults) =>
+        puzzleTestResults.map(() => null)
+      );
+    },
+    [setPuzzleRules, setPuzzleTestResults]
   );
 
   return (
     <>
-      {puzzle?.rules.map((rule, i) => (
+      {puzzleRules.map((puzzleRule, i) => (
         <div key={i} className="pb-4 flex items-center">
           <div className="text-center">
             <Input
               className="w-12 text-center"
-              value={rule.from}
+              value={puzzleRule.from}
               onChange={handleChangeFrom(i)}
             />
           </div>
           <div className="ml-4 mr-4">=&gt;</div>
           <Input
-            noBorder={rule.fixed ?? undefined}
+            noBorder={puzzleRule.fixed ?? undefined}
             type="text"
-            value={rule.to}
+            value={puzzleRule.to}
             onChange={handleChangeTo(i)}
-            disabled={rule.fixed ?? undefined}
-            style={rule.fixed ? { pointerEvents: "none" } : {}}
+            disabled={puzzleRule.fixed ?? undefined}
+            style={puzzleRule.fixed ? { pointerEvents: "none" } : {}}
           />
           <Button
             noBorder
@@ -141,9 +202,18 @@ export const SolutionEditPane: VoidFunctionComponent = () => {
       <div className="flex flex-col pb-4">
         <Button
           disabled={!puzzleTestable}
-          onClick={() => (puzzlePublishable ? handlePublish() : runTest())}
+          onClick={() => puzzleTestable && runPuzzleTest()}
         >
-          {puzzlePublishable ? "Publish puzzle" : "Run test"}
+          Run test
+        </Button>
+      </div>
+      <div className="flex flex-col pb-4">
+        <Button
+          reverse
+          disabled={!puzzlePublishable}
+          onClick={() => puzzlePublishable && handlePublish()}
+        >
+          Publish puzzle
         </Button>
       </div>
     </>

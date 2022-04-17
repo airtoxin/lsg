@@ -1,27 +1,68 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { z } from "zod";
-import { trpc } from "../../utils/trpc";
-import { useSetRecoilState } from "recoil";
-import { PuzzleState } from "../../states";
-import { useEffect } from "react";
 import { PuzzlePageLayout } from "./PuzzlePageLayout";
-import { PuzzlePane } from "./PuzzlePane";
-import { SolutionPane } from "./SolutionPane";
+import { PuzzleProblemSection } from "./PuzzleProblemSection";
+import { PuzzleRulesSection } from "./PuzzleRulesSection";
+import { usePuzzlePageQuery } from "./PuzzlePage.gen";
+import { gql } from "@apollo/client";
+import { useEffect } from "react";
+import {
+  PuzzleProblemState,
+  PuzzleRulesState,
+  PuzzleTestResultsState,
+  PuzzleTestsState,
+} from "../../states";
+import { useSetRecoilState } from "recoil";
+
+gql`
+  query PuzzlePage($id: ID!) {
+    puzzle(id: $id) {
+      description
+      input
+      rules {
+        fixed
+        from
+        to
+      }
+      tests {
+        step
+        isAny
+        expect
+      }
+    }
+  }
+`;
 
 const QuerySchema = z.object({
   id: z.string(),
 });
 
 export const PuzzlePage: NextPage = () => {
-  const { id } = QuerySchema.parse(useRouter().query);
-  const { isLoading, error, data } = trpc.useQuery(["page.Puzzle", { id }]);
-  const setPuzzle = useSetRecoilState(PuzzleState);
-  useEffect(() => {
-    setPuzzle(data?.puzzle);
-  }, [data?.puzzle, setPuzzle]);
+  const router = useRouter();
+  const { id } = QuerySchema.parse(router.query);
+  const { loading, error, data } = usePuzzlePageQuery({ variables: { id } });
 
-  if (isLoading) return <div>Loading...</div>;
+  const setPuzzleProblem = useSetRecoilState(PuzzleProblemState);
+  const setPuzzleRules = useSetRecoilState(PuzzleRulesState);
+  const setPuzzleTests = useSetRecoilState(PuzzleTestsState);
+  const PuzzleTestResults = useSetRecoilState(PuzzleTestResultsState);
+  useEffect(() => {
+    if (data != null) {
+      setPuzzleProblem(data.puzzle);
+      setPuzzleRules(data.puzzle.rules);
+      setPuzzleTests(data.puzzle.tests);
+      PuzzleTestResults(data.puzzle.tests.map(() => null));
+    }
+  }, [
+    PuzzleTestResults,
+    data,
+    setPuzzleProblem,
+    setPuzzleRules,
+    setPuzzleTests,
+  ]);
+
+  if (loading) return <div>Loading...</div>;
   if (error)
     return (
       <div>
@@ -32,8 +73,10 @@ export const PuzzlePage: NextPage = () => {
 
   return (
     <PuzzlePageLayout>
-      <PuzzlePane />
-      <SolutionPane />
+      <PuzzleProblemSection />
+      <PuzzleRulesSection />
     </PuzzlePageLayout>
   );
 };
+
+PuzzlePage.getInitialProps = async () => ({ pageProps: {} });

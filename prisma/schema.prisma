@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Puzzle {
+  id          String       @id @default(uuid())
+  description String       @db.VarChar(255)
+  input       String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  rules       PuzzleRule[]
+  tests       PuzzleTest[]
+}
+
+model PuzzleRule {
+  id       Int     @id @default(autoincrement())
+  from     String
+  to       String
+  fixed    Boolean
+  puzzleId String
+  puzzle   Puzzle  @relation(fields: [puzzleId], references: [id])
+}
+
+model PuzzleTest {
+  id       Int     @id @default(autoincrement())
+  isAny    Boolean
+  step     Int
+  expect   String
+  puzzleId String
+  puzzle   Puzzle  @relation(fields: [puzzleId], references: [id])
+}

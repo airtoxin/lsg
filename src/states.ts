@@ -1,23 +1,29 @@
-import { atom, selector } from "recoil";
-import { Puzzle } from "./core/puzzles";
+import { atom } from "recoil";
+import { Puzzle, PuzzleRule as PR, PuzzleTest as PT } from "./types.gen";
 
-export const PuzzleState = atom<Puzzle | undefined>({
-  key: "PuzzleState",
-  default: undefined,
+export type PuzzleProblem = Pick<Puzzle, "description" | "input">;
+export const PuzzleProblemState = atom<PuzzleProblem | null>({
+  key: "PuzzleProblemState",
+  default: null,
 });
 
-export const PuzzleSuccessState = selector({
-  key: "PuzzleSuccessState",
-  get: ({ get }) => {
-    const problem = get(PuzzleState);
-    return problem == null
-      ? undefined
-      : problem.tests.every(
-          (test) =>
-            test.result != null &&
-            test.resultAnimationText != null &&
-            test.result === test.expect &&
-            test.resultAnimationText === test.expect
-        );
-  },
+export type PuzzleRule = Pick<PR, "fixed" | "from" | "to">;
+export const PuzzleRulesState = atom<PuzzleRule[]>({
+  key: "PuzzleRulesState",
+  default: [],
+});
+
+export type PuzzleTest = Pick<PT, "step" | "isAny" | "expect">;
+export const PuzzleTestsState = atom<PuzzleTest[]>({
+  key: "PuzzleTestsState",
+  default: [],
+});
+
+export type PuzzleTestResult = {
+  result: string;
+  resultForAnimation?: string;
+} | null;
+export const PuzzleTestResultsState = atom<PuzzleTestResult[]>({
+  key: "PuzzleTestResultsState",
+  default: [],
 });
